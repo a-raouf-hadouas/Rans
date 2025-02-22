@@ -1,82 +1,82 @@
-﻿  Gate.c
+﻿  Assembling Hell.asm...
+  aes.c
+  Gate.c
   Imports.c
-C:\Users\vboxuser\Desktop\hello\click\Gate.c(43,7): warning C4013: 'HashStringJenkinsOneAtATime32BitA' undefined; assuming extern returning int
-C:\Users\vboxuser\Desktop\hello\click\Gate.c(105,8): warning C4142: 'HashStringJenkinsOneAtATime32BitA': benign redefinition of type
-C:\Users\vboxuser\Desktop\hello\click\Imports.c(57,24): warning C4133: 'initializing': incompatible types - from '_LIST_ENTRY *' to 'PLDR_DATA_TABLE_ENTRY'
-C:\Users\vboxuser\Desktop\hello\click\Imports.c(254,3): warning C4047: 'function': 'HCRYPTKEY' differs in levels of indirection from 'void *'
-C:\Users\vboxuser\Desktop\hello\click\Imports.c(254,3): warning C4024: 'pCryptExportKey': different types for formal and actual parameter 2
-C:\Users\vboxuser\Desktop\hello\click\Imports.c(256,3): warning C4047: 'function': 'DWORD' differs in levels of indirection from 'void *'
-C:\Users\vboxuser\Desktop\hello\click\Imports.c(256,3): warning C4024: 'pCryptExportKey': different types for formal and actual parameter 4
-C:\Users\vboxuser\Desktop\hello\click\Imports.c(269,3): warning C4047: 'function': 'HCRYPTKEY' differs in levels of indirection from 'void *'
-C:\Users\vboxuser\Desktop\hello\click\Imports.c(269,3): warning C4024: 'pCryptExportKey': different types for formal and actual parameter 2
-C:\Users\vboxuser\Desktop\hello\click\Imports.c(271,3): warning C4047: 'function': 'DWORD' differs in levels of indirection from 'void *'
-C:\Users\vboxuser\Desktop\hello\click\Imports.c(271,3): warning C4024: 'pCryptExportKey': different types for formal and actual parameter 4
-C:\Users\vboxuser\Desktop\hello\click\Imports.c(312,9): warning C4047: '=': 'HCRYPTKEY' differs in levels of indirection from 'void *'
-C:\Users\vboxuser\Desktop\hello\click\Imports.c(316,10): warning C4047: '=': 'HCRYPTPROV' differs in levels of indirection from 'void *'
-C:\Users\vboxuser\Desktop\hello\click\Imports.c(188,13): warning C4047: 'initializing': 'HCRYPTPROV' differs in levels of indirection from 'void *'
-C:\Users\vboxuser\Desktop\hello\click\Imports.c(189,12): warning C4047: 'initializing': 'HCRYPTKEY' differs in levels of indirection from 'void *'
-C:\Users\vboxuser\Desktop\hello\click\Imports.c(517,29): warning C4047: 'function': 'LONG' differs in levels of indirection from 'void *'
-C:\Users\vboxuser\Desktop\hello\click\Imports.c(517,29): warning C4024: 'pSetFilePointer': different types for formal and actual parameter 2
-C:\Users\vboxuser\Desktop\hello\click\Imports.c(574,9): warning C4047: 'initializing': 'SIZE_T' differs in levels of indirection from 'void *'
-C:\Users\vboxuser\Desktop\hello\click\Imports.c(579,8): warning C4047: 'initializing': 'DWORD' differs in levels of indirection from 'void *'
+C:\Users\vboxuser\Desktop\hello\Gate.c(43,7): warning C4013: 'HashStringJenkinsOneAtATime32BitA' undefined; assuming extern returning int
+C:\Users\vboxuser\Desktop\hello\Gate.c(105,8): warning C4142: 'HashStringJenkinsOneAtATime32BitA': benign redefinition of type
+C:\Users\vboxuser\Desktop\hello\Imports.c(57,24): warning C4133: 'initializing': incompatible types - from '_LIST_ENTRY *' to 'PLDR_DATA_TABLE_ENTRY'
+C:\Users\vboxuser\Desktop\hello\Imports.c(254,3): warning C4047: 'function': 'HCRYPTKEY' differs in levels of indirection from 'void *'
+C:\Users\vboxuser\Desktop\hello\Imports.c(254,3): warning C4024: 'pCryptExportKey': different types for formal and actual parameter 2
+C:\Users\vboxuser\Desktop\hello\Imports.c(256,3): warning C4047: 'function': 'DWORD' differs in levels of indirection from 'void *'
+C:\Users\vboxuser\Desktop\hello\Imports.c(256,3): warning C4024: 'pCryptExportKey': different types for formal and actual parameter 4
+C:\Users\vboxuser\Desktop\hello\Imports.c(269,3): warning C4047: 'function': 'HCRYPTKEY' differs in levels of indirection from 'void *'
+C:\Users\vboxuser\Desktop\hello\Imports.c(269,3): warning C4024: 'pCryptExportKey': different types for formal and actual parameter 2
+C:\Users\vboxuser\Desktop\hello\Imports.c(271,3): warning C4047: 'function': 'DWORD' differs in levels of indirection from 'void *'
+C:\Users\vboxuser\Desktop\hello\Imports.c(271,3): warning C4024: 'pCryptExportKey': different types for formal and actual parameter 4
+C:\Users\vboxuser\Desktop\hello\Imports.c(312,9): warning C4047: '=': 'HCRYPTKEY' differs in levels of indirection from 'void *'
+C:\Users\vboxuser\Desktop\hello\Imports.c(316,10): warning C4047: '=': 'HCRYPTPROV' differs in levels of indirection from 'void *'
+C:\Users\vboxuser\Desktop\hello\Imports.c(188,13): warning C4047: 'initializing': 'HCRYPTPROV' differs in levels of indirection from 'void *'
+C:\Users\vboxuser\Desktop\hello\Imports.c(189,12): warning C4047: 'initializing': 'HCRYPTKEY' differs in levels of indirection from 'void *'
+C:\Users\vboxuser\Desktop\hello\Imports.c(517,29): warning C4047: 'function': 'LONG' differs in levels of indirection from 'void *'
+C:\Users\vboxuser\Desktop\hello\Imports.c(517,29): warning C4024: 'pSetFilePointer': different types for formal and actual parameter 2
+C:\Users\vboxuser\Desktop\hello\Imports.c(574,9): warning C4047: 'initializing': 'SIZE_T' differs in levels of indirection from 'void *'
+C:\Users\vboxuser\Desktop\hello\Imports.c(579,8): warning C4047: 'initializing': 'DWORD' differs in levels of indirection from 'void *'
   main.c
-C:\Users\vboxuser\Desktop\hello\click\IatC.h(42,54): warning C4047: 'function': 'UINT' differs in levels of indirection from 'void *'
+C:\Users\vboxuser\Desktop\hello\IatC.h(42,54): warning C4047: 'function': 'UINT' differs in levels of indirection from 'void *'
   (compiling source file 'main.c')
   
-C:\Users\vboxuser\Desktop\hello\click\IatC.h(42,54): warning C4024: 'MessageBoxA': different types for formal and actual parameter 4
+C:\Users\vboxuser\Desktop\hello\IatC.h(42,54): warning C4024: 'MessageBoxA': different types for formal and actual parameter 4
   (compiling source file 'main.c')
   
-C:\Users\vboxuser\Desktop\hello\click\IatC.h(45,41): warning C4047: 'function': 'DWORD' differs in levels of indirection from 'void *'
+C:\Users\vboxuser\Desktop\hello\IatC.h(45,41): warning C4047: 'function': 'DWORD' differs in levels of indirection from 'void *'
   (compiling source file 'main.c')
   
-C:\Users\vboxuser\Desktop\hello\click\IatC.h(45,41): warning C4024: 'SetCriticalSectionSpinCount': different types for formal and actual parameter 2
+C:\Users\vboxuser\Desktop\hello\IatC.h(45,41): warning C4024: 'SetCriticalSectionSpinCount': different types for formal and actual parameter 2
   (compiling source file 'main.c')
   
-C:\Users\vboxuser\Desktop\hello\click\IatC.h(47,31): warning C4047: 'function': 'int' differs in levels of indirection from 'void *'
+C:\Users\vboxuser\Desktop\hello\IatC.h(47,31): warning C4047: 'function': 'int' differs in levels of indirection from 'void *'
   (compiling source file 'main.c')
   
-C:\Users\vboxuser\Desktop\hello\click\IatC.h(47,31): warning C4024: 'GetWindowLongPtrW': different types for formal and actual parameter 2
+C:\Users\vboxuser\Desktop\hello\IatC.h(47,31): warning C4024: 'GetWindowLongPtrW': different types for formal and actual parameter 2
   (compiling source file 'main.c')
   
-C:\Users\vboxuser\Desktop\hello\click\IatC.h(50,28): warning C4047: 'function': 'LCID' differs in levels of indirection from 'void *'
+C:\Users\vboxuser\Desktop\hello\IatC.h(50,28): warning C4047: 'function': 'LCID' differs in levels of indirection from 'void *'
   (compiling source file 'main.c')
   
-C:\Users\vboxuser\Desktop\hello\click\IatC.h(50,28): warning C4024: 'ConvertDefaultLocale': different types for formal and actual parameter 1
+C:\Users\vboxuser\Desktop\hello\IatC.h(50,28): warning C4024: 'ConvertDefaultLocale': different types for formal and actual parameter 1
   (compiling source file 'main.c')
   
-C:\Users\vboxuser\Desktop\hello\click\IatC.h(51,27): warning C4047: 'function': 'UINT' differs in levels of indirection from 'void *'
+C:\Users\vboxuser\Desktop\hello\IatC.h(51,27): warning C4047: 'function': 'UINT' differs in levels of indirection from 'void *'
   (compiling source file 'main.c')
   
-C:\Users\vboxuser\Desktop\hello\click\IatC.h(51,27): warning C4024: 'MultiByteToWideChar': different types for formal and actual parameter 1
+C:\Users\vboxuser\Desktop\hello\IatC.h(51,27): warning C4024: 'MultiByteToWideChar': different types for formal and actual parameter 1
   (compiling source file 'main.c')
   
-C:\Users\vboxuser\Desktop\hello\click\IatC.h(51,33): warning C4047: 'function': 'DWORD' differs in levels of indirection from 'void *'
+C:\Users\vboxuser\Desktop\hello\IatC.h(51,33): warning C4047: 'function': 'DWORD' differs in levels of indirection from 'void *'
   (compiling source file 'main.c')
   
-C:\Users\vboxuser\Desktop\hello\click\IatC.h(51,33): warning C4024: 'MultiByteToWideChar': different types for formal and actual parameter 2
+C:\Users\vboxuser\Desktop\hello\IatC.h(51,33): warning C4024: 'MultiByteToWideChar': different types for formal and actual parameter 2
   (compiling source file 'main.c')
   
-C:\Users\vboxuser\Desktop\hello\click\IatC.h(51,45): warning C4047: 'function': 'int' differs in levels of indirection from 'void *'
+C:\Users\vboxuser\Desktop\hello\IatC.h(51,45): warning C4047: 'function': 'int' differs in levels of indirection from 'void *'
   (compiling source file 'main.c')
   
-C:\Users\vboxuser\Desktop\hello\click\IatC.h(51,45): warning C4024: 'MultiByteToWideChar': different types for formal and actual parameter 4
+C:\Users\vboxuser\Desktop\hello\IatC.h(51,45): warning C4024: 'MultiByteToWideChar': different types for formal and actual parameter 4
   (compiling source file 'main.c')
   
-C:\Users\vboxuser\Desktop\hello\click\IatC.h(51,57): warning C4047: 'function': 'int' differs in levels of indirection from 'void *'
+C:\Users\vboxuser\Desktop\hello\IatC.h(51,57): warning C4047: 'function': 'int' differs in levels of indirection from 'void *'
   (compiling source file 'main.c')
   
-C:\Users\vboxuser\Desktop\hello\click\IatC.h(51,57): warning C4024: 'MultiByteToWideChar': different types for formal and actual parameter 6
+C:\Users\vboxuser\Desktop\hello\IatC.h(51,57): warning C4024: 'MultiByteToWideChar': different types for formal and actual parameter 6
   (compiling source file 'main.c')
   
-C:\Users\vboxuser\Desktop\hello\click\main.c(12,2): warning C4013: 'InitializeSysCalls' undefined; assuming extern returning int
-C:\Users\vboxuser\Desktop\hello\click\main.c(14,2): warning C4013: 'InitializeModules' undefined; assuming extern returning int
-C:\Users\vboxuser\Desktop\hello\click\main.c(25,30): warning C4133: 'function': incompatible types - from 'SIZE_T *' to 'LPDWORD'
-C:\Users\vboxuser\Desktop\hello\click\main.c(69,32): warning C4244: '=': conversion from 'SIZE_T' to 'DWORD', possible loss of data
-C:\Users\vboxuser\Desktop\hello\click\main.c(82,70): warning C4244: 'function': conversion from 'SIZE_T' to 'DWORD', possible loss of data
-C:\Users\vboxuser\Desktop\hello\click\main.c(103,12): warning C4026: function declared with formal parameter list
+C:\Users\vboxuser\Desktop\hello\main.c(12,2): warning C4013: 'InitializeSysCalls' undefined; assuming extern returning int
+C:\Users\vboxuser\Desktop\hello\main.c(14,2): warning C4013: 'InitializeModules' undefined; assuming extern returning int
+C:\Users\vboxuser\Desktop\hello\main.c(25,30): warning C4133: 'function': incompatible types - from 'SIZE_T *' to 'LPDWORD'
+C:\Users\vboxuser\Desktop\hello\main.c(69,32): warning C4244: '=': conversion from 'SIZE_T' to 'DWORD', possible loss of data
+C:\Users\vboxuser\Desktop\hello\main.c(82,70): warning C4244: 'function': conversion from 'SIZE_T' to 'DWORD', possible loss of data
+C:\Users\vboxuser\Desktop\hello\main.c(103,12): warning C4026: function declared with formal parameter list
   Generating Code...
-C:\Users\vboxuser\Desktop\hello\click\Imports.c(141,1): warning C4715: 'InitializeSysCalls': not all control paths return a value
+C:\Users\vboxuser\Desktop\hello\Imports.c(141,1): warning C4715: 'InitializeSysCalls': not all control paths return a value
   LINK : /LTCG specified but no code generation required; remove /LTCG from the link command line to improve linker performance
-  Project1.vcxproj -> C:\Users\vboxuser\Desktop\hello\click\x64\Release\Encryption.exe
-  'pwsh.exe' is not recognized as an internal or external command,
-  operable program or batch file.
+  Project1.vcxproj -> C:\Users\vboxuser\Desktop\hello\x64\Release\Encryption.exe

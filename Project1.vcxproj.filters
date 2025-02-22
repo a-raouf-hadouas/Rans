@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\Downloads\Send-Archive\aes.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -25,6 +22,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Gate.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="aes.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

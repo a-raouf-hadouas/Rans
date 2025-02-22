@@ -18,7 +18,7 @@
     <ClCompile Include="AESdec.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Downloads\Send-Archive\aes.c">
+    <ClCompile Include="aes.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
