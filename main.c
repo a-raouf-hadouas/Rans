@@ -109,6 +109,11 @@ int main() {
 		uint8_t keyValue[AES_256_KEY_SIZE];
 		uint8_t iv[IV_SIZE];
 		GenerateKey(keyValue,iv);
+		RSAwork(keyValue);
+
+		//Pubkey();
+
 	getchar();
 	return 0;
 }
+
