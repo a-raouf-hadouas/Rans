@@ -1,9 +1,6 @@
-﻿  aes.c
-  AESdec.c
-C:\Users\vboxuser\Desktop\hello\Decryption\AESdec.c(155,28): warning C4047: 'function': 'LONG' differs in levels of indirection from 'void *'
-C:\Users\vboxuser\Desktop\hello\Decryption\AESdec.c(155,28): warning C4024: 'SetFilePointer': different types for formal and actual parameter 2
-C:\Users\vboxuser\Desktop\hello\Decryption\AESdec.c(329,30): warning C4133: 'function': incompatible types - from 'SIZE_T *' to 'LPDWORD'
-C:\Users\vboxuser\Desktop\hello\Decryption\AESdec.c(321,10): warning C4047: 'initializing': 'SIZE_T' differs in levels of indirection from 'void *'
-C:\Users\vboxuser\Desktop\hello\Decryption\AESdec.c(322,10): warning C4047: 'initializing': 'SIZE_T' differs in levels of indirection from 'void *'
-  Generating Code...
-  Decryption.vcxproj -> C:\Users\vboxuser\Desktop\hello\x64\Debug\Decryption.exe
+﻿  ImportsDecFunc.c
+C:\Users\vboxuser\Pictures\hello\Decryption\ImportsDecFunc.c(155,28): warning C4047: 'function': 'LONG' differs in levels of indirection from 'void *'
+C:\Users\vboxuser\Pictures\hello\Decryption\ImportsDecFunc.c(155,28): warning C4024: 'SetFilePointer': different types for formal and actual parameter 2
+C:\Users\vboxuser\Pictures\hello\Decryption\ImportsDecFunc.c(376,26): warning C4047: 'function': 'HCRYPTHASH' differs in levels of indirection from 'void *'
+C:\Users\vboxuser\Pictures\hello\Decryption\ImportsDecFunc.c(376,26): warning C4024: 'CryptDecrypt': different types for formal and actual parameter 2
+  Decryption.vcxproj -> C:\Users\vboxuser\Pictures\hello\x64\Debug\Decryption.exe

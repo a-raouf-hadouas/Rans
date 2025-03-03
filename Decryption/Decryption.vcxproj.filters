@@ -15,15 +15,21 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AESdec.c">
+    <ClCompile Include="Dmain.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="aes.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ImportsDecFunc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="aes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="commonDec.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

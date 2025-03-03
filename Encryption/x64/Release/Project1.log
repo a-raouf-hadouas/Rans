@@ -1,77 +1,57 @@
-﻿  Imports.c
-  main.c
-C:\Users\vboxuser\Desktop\hello\Imports.c(8,36): warning C4081: expected 'newline'; found ';'
-C:\Users\vboxuser\Desktop\hello\Imports.c(59,24): warning C4133: 'initializing': incompatible types - from '_LIST_ENTRY *' to 'PLDR_DATA_TABLE_ENTRY'
-C:\Users\vboxuser\Desktop\hello\Imports.c(256,3): warning C4047: 'function': 'HCRYPTKEY' differs in levels of indirection from 'void *'
-C:\Users\vboxuser\Desktop\hello\Imports.c(256,3): warning C4024: 'pCryptExportKey': different types for formal and actual parameter 2
-C:\Users\vboxuser\Desktop\hello\Imports.c(258,3): warning C4047: 'function': 'DWORD' differs in levels of indirection from 'void *'
-C:\Users\vboxuser\Desktop\hello\Imports.c(258,3): warning C4024: 'pCryptExportKey': different types for formal and actual parameter 4
-C:\Users\vboxuser\Desktop\hello\Imports.c(271,3): warning C4047: 'function': 'HCRYPTKEY' differs in levels of indirection from 'void *'
-C:\Users\vboxuser\Desktop\hello\Imports.c(271,3): warning C4024: 'pCryptExportKey': different types for formal and actual parameter 2
-C:\Users\vboxuser\Desktop\hello\Imports.c(273,3): warning C4047: 'function': 'DWORD' differs in levels of indirection from 'void *'
-C:\Users\vboxuser\Desktop\hello\Imports.c(273,3): warning C4024: 'pCryptExportKey': different types for formal and actual parameter 4
-C:\Users\vboxuser\Desktop\hello\Imports.c(333,9): warning C4047: '=': 'HCRYPTKEY' differs in levels of indirection from 'void *'
-C:\Users\vboxuser\Desktop\hello\Imports.c(337,10): warning C4047: '=': 'HCRYPTPROV' differs in levels of indirection from 'void *'
-C:\Users\vboxuser\Desktop\hello\Imports.c(190,13): warning C4047: 'initializing': 'HCRYPTPROV' differs in levels of indirection from 'void *'
-C:\Users\vboxuser\Desktop\hello\Imports.c(191,12): warning C4047: 'initializing': 'HCRYPTKEY' differs in levels of indirection from 'void *'
-C:\Users\vboxuser\Desktop\hello\Imports.c(538,29): warning C4047: 'function': 'LONG' differs in levels of indirection from 'void *'
-C:\Users\vboxuser\Desktop\hello\Imports.c(538,29): warning C4024: 'pSetFilePointer': different types for formal and actual parameter 2
-C:\Users\vboxuser\Desktop\hello\Imports.c(595,9): warning C4047: 'initializing': 'SIZE_T' differs in levels of indirection from 'void *'
-C:\Users\vboxuser\Desktop\hello\Imports.c(600,8): warning C4047: 'initializing': 'DWORD' differs in levels of indirection from 'void *'
+﻿  Assembling Hell.asm...
+  Emain.c
 C:\Users\vboxuser\Desktop\hello\IatC.h(42,54): warning C4047: 'function': 'UINT' differs in levels of indirection from 'void *'
-  (compiling source file 'main.c')
+  (compiling source file 'Emain.c')
   
 C:\Users\vboxuser\Desktop\hello\IatC.h(42,54): warning C4024: 'MessageBoxA': different types for formal and actual parameter 4
-  (compiling source file 'main.c')
+  (compiling source file 'Emain.c')
   
 C:\Users\vboxuser\Desktop\hello\IatC.h(45,41): warning C4047: 'function': 'DWORD' differs in levels of indirection from 'void *'
-  (compiling source file 'main.c')
+  (compiling source file 'Emain.c')
   
 C:\Users\vboxuser\Desktop\hello\IatC.h(45,41): warning C4024: 'SetCriticalSectionSpinCount': different types for formal and actual parameter 2
-  (compiling source file 'main.c')
+  (compiling source file 'Emain.c')
   
 C:\Users\vboxuser\Desktop\hello\IatC.h(47,31): warning C4047: 'function': 'int' differs in levels of indirection from 'void *'
-  (compiling source file 'main.c')
+  (compiling source file 'Emain.c')
   
 C:\Users\vboxuser\Desktop\hello\IatC.h(47,31): warning C4024: 'GetWindowLongPtrW': different types for formal and actual parameter 2
-  (compiling source file 'main.c')
+  (compiling source file 'Emain.c')
   
 C:\Users\vboxuser\Desktop\hello\IatC.h(50,28): warning C4047: 'function': 'LCID' differs in levels of indirection from 'void *'
-  (compiling source file 'main.c')
+  (compiling source file 'Emain.c')
   
 C:\Users\vboxuser\Desktop\hello\IatC.h(50,28): warning C4024: 'ConvertDefaultLocale': different types for formal and actual parameter 1
-  (compiling source file 'main.c')
+  (compiling source file 'Emain.c')
   
 C:\Users\vboxuser\Desktop\hello\IatC.h(51,27): warning C4047: 'function': 'UINT' differs in levels of indirection from 'void *'
-  (compiling source file 'main.c')
+  (compiling source file 'Emain.c')
   
 C:\Users\vboxuser\Desktop\hello\IatC.h(51,27): warning C4024: 'MultiByteToWideChar': different types for formal and actual parameter 1
-  (compiling source file 'main.c')
+  (compiling source file 'Emain.c')
   
 C:\Users\vboxuser\Desktop\hello\IatC.h(51,33): warning C4047: 'function': 'DWORD' differs in levels of indirection from 'void *'
-  (compiling source file 'main.c')
+  (compiling source file 'Emain.c')
   
 C:\Users\vboxuser\Desktop\hello\IatC.h(51,33): warning C4024: 'MultiByteToWideChar': different types for formal and actual parameter 2
-  (compiling source file 'main.c')
+  (compiling source file 'Emain.c')
   
 C:\Users\vboxuser\Desktop\hello\IatC.h(51,45): warning C4047: 'function': 'int' differs in levels of indirection from 'void *'
-  (compiling source file 'main.c')
+  (compiling source file 'Emain.c')
   
 C:\Users\vboxuser\Desktop\hello\IatC.h(51,45): warning C4024: 'MultiByteToWideChar': different types for formal and actual parameter 4
-  (compiling source file 'main.c')
+  (compiling source file 'Emain.c')
   
 C:\Users\vboxuser\Desktop\hello\IatC.h(51,57): warning C4047: 'function': 'int' differs in levels of indirection from 'void *'
-  (compiling source file 'main.c')
+  (compiling source file 'Emain.c')
   
 C:\Users\vboxuser\Desktop\hello\IatC.h(51,57): warning C4024: 'MultiByteToWideChar': different types for formal and actual parameter 6
-  (compiling source file 'main.c')
+  (compiling source file 'Emain.c')
   
-C:\Users\vboxuser\Desktop\hello\main.c(12,2): warning C4013: 'InitializeSysCalls' undefined; assuming extern returning int
-C:\Users\vboxuser\Desktop\hello\main.c(14,2): warning C4013: 'InitializeModules' undefined; assuming extern returning int
-C:\Users\vboxuser\Desktop\hello\main.c(25,30): warning C4133: 'function': incompatible types - from 'SIZE_T *' to 'LPDWORD'
-C:\Users\vboxuser\Desktop\hello\main.c(69,32): warning C4244: '=': conversion from 'SIZE_T' to 'DWORD', possible loss of data
-C:\Users\vboxuser\Desktop\hello\main.c(82,70): warning C4244: 'function': conversion from 'SIZE_T' to 'DWORD', possible loss of data
-  Generating Code...
-C:\Users\vboxuser\Desktop\hello\Imports.c(143,1): warning C4715: 'InitializeSysCalls': not all control paths return a value
+C:\Users\vboxuser\Desktop\hello\Emain.c(12,2): warning C4013: 'InitializeSysCalls' undefined; assuming extern returning int
+C:\Users\vboxuser\Desktop\hello\Emain.c(14,2): warning C4013: 'InitializeModules' undefined; assuming extern returning int
+C:\Users\vboxuser\Desktop\hello\Emain.c(25,30): warning C4133: 'function': incompatible types - from 'SIZE_T *' to 'LPDWORD'
+C:\Users\vboxuser\Desktop\hello\Emain.c(68,32): warning C4244: '=': conversion from 'SIZE_T' to 'DWORD', possible loss of data
+C:\Users\vboxuser\Desktop\hello\Emain.c(81,70): warning C4244: 'function': conversion from 'SIZE_T' to 'DWORD', possible loss of data
   LINK : /LTCG specified but no code generation required; remove /LTCG from the link command line to improve linker performance
   Project1.vcxproj -> C:\Users\vboxuser\Desktop\hello\x64\Release\Encryption.exe

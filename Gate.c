@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include <Windows.h>
 #include "structs.h"
-#include"common.h"
+#include"commonEnc.h"
 
 INT random = 0;
 

@@ -392,22 +392,6 @@ typedef struct _INITIAL_TEB {
 } INITIAL_TEB, * PINITIAL_TEB;
 
 
-typedef BOOL(WINAPI* ReadFile_t)(
-	HANDLE hFile,
-	LPVOID lpBuffer,
-	DWORD nNumberOfBytesToRead,
-	LPDWORD lpNumberOfBytesRead,
-	LPOVERLAPPED lpOverlapped
-	);
-
-typedef BOOL(WINAPI* WriteFile_t)(
-	HANDLE hFile,
-	LPCVOID lpBuffer,
-	DWORD nNumberOfBytesToWrite,
-	LPDWORD lpNumberOfBytesWritten,
-	LPOVERLAPPED lpOverlapped
-	);
-
 typedef VOID(NTAPI* RtlInitUnicodeStringFunc)(PUNICODE_STRING, PCWSTR);
 
 typedef BOOL(WINAPI* CryptAcquireContextFunc)(
@@ -481,4 +465,23 @@ typedef DWORD(WINAPI* SetFilePointerFunc)(
 
 typedef BOOL(WINAPI* SetEndOfFileFunc)(
 	HANDLE hFile
+	);
+
+typedef BOOL(WINAPI* CryptImportKeyFunc)(
+	HCRYPTPROV hProv,
+	const BYTE* pbData,
+	DWORD      dwDataLen,
+	HCRYPTKEY  hPubKey,
+	DWORD      dwFlags,
+	HCRYPTKEY* phKey
+	);
+
+typedef BOOL(WINAPI* CryptEncryptFunc)(
+	HCRYPTKEY hKey,                 
+	HCRYPTHASH hHash,              
+	BOOL Final,                     
+	DWORD dwFlags,                
+	BYTE* pbData,                   
+	DWORD* pdwDataLen,             
+	DWORD dwBufLen                 
 	);

