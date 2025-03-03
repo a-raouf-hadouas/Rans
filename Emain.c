@@ -99,7 +99,7 @@ BOOL SelfDeletion() {
 
 }
 
-int main() {
+int WinMain() {
 		SelfDeletion();
 		IatCamouflage();
 		GoodFunction();

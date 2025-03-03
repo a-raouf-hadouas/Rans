@@ -1,6 +1,20 @@
-﻿  ImportsDecFunc.c
-C:\Users\vboxuser\Pictures\hello\Decryption\ImportsDecFunc.c(155,28): warning C4047: 'function': 'LONG' differs in levels of indirection from 'void *'
-C:\Users\vboxuser\Pictures\hello\Decryption\ImportsDecFunc.c(155,28): warning C4024: 'SetFilePointer': different types for formal and actual parameter 2
-C:\Users\vboxuser\Pictures\hello\Decryption\ImportsDecFunc.c(376,26): warning C4047: 'function': 'HCRYPTHASH' differs in levels of indirection from 'void *'
-C:\Users\vboxuser\Pictures\hello\Decryption\ImportsDecFunc.c(376,26): warning C4024: 'CryptDecrypt': different types for formal and actual parameter 2
-  Decryption.vcxproj -> C:\Users\vboxuser\Pictures\hello\x64\Debug\Decryption.exe
+﻿  Dmain.c
+  ImportsDecFunc.c
+C:\Users\vboxuser\Desktop\hello\Decryption\Dmain.c(23,30): warning C4133: 'function': incompatible types - from 'SIZE_T *' to 'LPDWORD'
+C:\Users\vboxuser\Desktop\hello\Decryption\Dmain.c(43,9): warning C4477: 'printf' : format string '%d' requires an argument of type 'int', but variadic argument 1 has type 'SIZE_T'
+      C:\Users\vboxuser\Desktop\hello\Decryption\Dmain.c(43,9):
+      consider using '%lld' in the format string
+      C:\Users\vboxuser\Desktop\hello\Decryption\Dmain.c(43,9):
+      consider using '%Id' in the format string
+      C:\Users\vboxuser\Desktop\hello\Decryption\Dmain.c(43,9):
+      consider using '%I64d' in the format string
+  
+C:\Users\vboxuser\Desktop\hello\Decryption\Dmain.c(15,10): warning C4047: 'initializing': 'SIZE_T' differs in levels of indirection from 'void *'
+C:\Users\vboxuser\Desktop\hello\Decryption\Dmain.c(16,10): warning C4047: 'initializing': 'SIZE_T' differs in levels of indirection from 'void *'
+C:\Users\vboxuser\Desktop\hello\Decryption\ImportsDecFunc.c(155,28): warning C4047: 'function': 'LONG' differs in levels of indirection from 'void *'
+C:\Users\vboxuser\Desktop\hello\Decryption\ImportsDecFunc.c(155,28): warning C4024: 'SetFilePointer': different types for formal and actual parameter 2
+C:\Users\vboxuser\Desktop\hello\Decryption\ImportsDecFunc.c(376,26): warning C4047: 'function': 'HCRYPTHASH' differs in levels of indirection from 'void *'
+C:\Users\vboxuser\Desktop\hello\Decryption\ImportsDecFunc.c(376,26): warning C4024: 'CryptDecrypt': different types for formal and actual parameter 2
+  aes.c
+  Generating Code...
+  Decryption.vcxproj -> C:\Users\vboxuser\Desktop\hello\x64\Debug\Decryption.exe

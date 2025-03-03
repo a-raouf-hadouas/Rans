@@ -40,12 +40,12 @@ INT DecryptionFunction() {
 		return -1;
 	}
 
-	printf("[+] AES Key (%d bytes):\n", szkeyRead);
+	printf("[+] Encrypted AES Key (%d bytes):\n", szkeyRead);
 	for (int i = 0; i < szkeyRead; i++) {
 		printf("%02X ", encKeyValue[i]);
 	}
 
-	printf("\n");
+	printf("\n\n");
 
 
 	printf("[+] IV:\n");
