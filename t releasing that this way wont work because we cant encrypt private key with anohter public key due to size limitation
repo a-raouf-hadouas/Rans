@@ -1,6 +1,0 @@
-[33m0de9d0a[m[33m ([m[1;36mHEAD[m[33m)[m just releasing that this way won't work because we can't encrypt private key with anohter public key due to size limitation
-[33m9993f62[m[33m ([m[1;33mtag: [m[1;33mv1.1.1[m[33m, [m[1;32mmaster[m[33m)[m Write the Enc_AES_Key and RAS_Private_Key to files
-[33mb58d9ce[m[33m ([m[1;33mtag: [m[1;33mv1.1[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m Organizing the code by adding RSAwork function
-[33me2e3b96[m[33m ([m[1;33mtag: [m[1;33mv1.0[m[33m)[m Generate RSA Key pair, testing AES-key encryption-decryption
-[33m611bd4f[m delete vcpkg
-[33mb02e5b3[m still need fixes
