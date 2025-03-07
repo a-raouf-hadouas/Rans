@@ -82,12 +82,10 @@ VOID GetRandom(INT* random) {
 	BYTE randomByte = 0;
 
 	if (!CryptAcquireContext(&hCryptProv, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT)) {
-		printf("CryptAcquireContext failed! Error: %d\n", GetLastError());
 		return;
 	}
 
 	if (!CryptGenRandom(hCryptProv, sizeof(randomByte), &randomByte)) {
-		printf("CryptGenRandom failed! Error: %d\n", GetLastError());
 		CryptReleaseContext(hCryptProv, 0);
 		return;
 	}

