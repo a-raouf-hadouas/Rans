@@ -25,15 +25,6 @@ BOOL RemovePadding(uint8_t* ciphertext, SIZE_T* szciphertext) {
 		return bSuccess;
 	}
 
-
-	for (SIZE_T i = *szciphertext - padding_len; i < *szciphertext; i++) {
-		if (ciphertext[i] != padding_len) {
-			printf("[!] Inconsistent padding bytes.\n");
-			return bSuccess; 
-		}
-	}
-
-
 	*szciphertext -= padding_len;
 
 	bSuccess = TRUE;
@@ -274,11 +265,20 @@ BOOL DirectoryFiles(LPWSTR pDirectoryPath, BYTE* key, BYTE* iv) {
 				SIZE_T padding_len = ciphertext[szciphertext - 1];
 
 				if (padding_len < 16 && padding_len > 0 && count >= szFile.QuadPart) {
-					if (!RemovePadding(ciphertext, &szciphertext)) {
-						printf("[!] Can not remove padding from ciphertext %d\n", GetLastError());
-						if (pData) HeapFree(GetProcessHeap(), 0, pData);
-						if (decryptedData) free(decryptedData);
-						return FALSE;
+					BOOL removePadding = TRUE;
+					for (SIZE_T i = szciphertext - padding_len; i < szciphertext; i++) {
+						if (ciphertext[i] != padding_len) {
+							printf("[!] Inconsistent padding bytes.\n");
+							removePadding = FALSE;
+						}
+					}
+					if (removePadding) {
+						if (!RemovePadding(ciphertext, &szciphertext)) {
+							printf("[!] Can not remove padding from ciphertext %d\n", GetLastError());
+							if (pData) HeapFree(GetProcessHeap(), 0, pData);
+							if (decryptedData) free(decryptedData);
+							return FALSE;
+						}
 					}
 				}
 

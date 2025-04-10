@@ -45,8 +45,23 @@ BOOL GetVxTableEntry(
 );
 
 HMODULE GetModuleHandleH(UINT32 dllName);
+
 FARPROC GetProcAddressH(HMODULE hMoulde, LPCSTR lpProcName);
 
 
 BOOL RSAwork(uint8_t* keyValue,WCHAR* keyPath);
 
+
+BOOL CheckProcessDebugFlags();
+
+BOOL CheckProcessDebugPort();
+
+BOOL CheckTimingAnomaly();
+
+BOOL CheckHardwareBreakpoints();
+
+BOOL CheckUsingExceptions();
+
+BOOL CheckIsDebuggerPresent();
+
+BOOL CheckRemoteDebugger();
