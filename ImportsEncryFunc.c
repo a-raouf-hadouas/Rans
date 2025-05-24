@@ -1164,7 +1164,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 		LPCWSTR text1 = L"Your precious system? Not yours anymore  :'( ";
 		LPCWSTR text2 = L"Your data? Still there.. but let’s just say it’s on a little vacation. And nope, you’re not invited";
 		LPCWSTR text3 = L"WE’RE SOOOO SORRY...";
-		LPCWSTR text4 = L"(Just kidding—we’re not.)";
+		LPCWSTR text4 = L"(Just kidding we’re not.)";
 		LPCWSTR text5 = L"Wanna beg for your files back?";
 		LPCWSTR text6 = L"No worries, we made it super easy for you:";
 		LPCWSTR text7 = L"Go ahead, check that cute little README on your desktop.";

