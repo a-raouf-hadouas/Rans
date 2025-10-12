@@ -1,1 +1,1 @@
-This is simple ransomware with C for educational purpose .
+Simulation of Ransomware attack 
